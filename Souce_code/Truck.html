@@ -1,0 +1,6302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@400;600;700&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Angkor&family=Bayon&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* animation */
+        /* 1. Left Image Animation: Smooth slide right + fade in */
+        .anim-fade-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: fadeInLeft 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* 2. Right Image Animation: Smooth slide left + fade in */
+        .anim-fade-right {
+            opacity: 0;
+            transform: translateX(30px);
+            animation: fadeInRight 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* 3. Text Animation: Scale up, fade in, and add a subtle glowing shadow */
+        .anim-text-pop {
+            opacity: 0;
+            transform: translate(-50%, 50%) scale(0.9);
+            /* Adjusted to balance your absolute positioning */
+            transform-origin: center;
+            animation: textPopIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.4s;
+            /* Waits slightly for the background images to load first */
+        }
+
+        /* --- KEYFRAMES --- */
+        @keyframes fadeInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes textPopIn {
+            to {
+                opacity: 1;
+                /* Keeps your original positioning but updates scale and adds a premium look */
+                transform: scale(1);
+                text-shadow: 2px 4px 10px rgba(6, 45, 150, 0.15);
+            }
+        }
+
+        .app-logo {
+            transition: all 1s ease-in;
+        }
+
+        .app-logo:hover {
+            transform: scale(1.1)
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ink: #1B3A6B;
+            --ink-light: #2E5BA8;
+            --sage: #4A7C59;
+            --paper: #FAFAF8;
+            --warm-gray: #F0EDE8;
+            --border: #DDD9D3;
+            --muted: #8C8680;
+            --shell: #0F1923;
+            --shell-mid: #1A2738;
+            --shell-hi: #243347;
+            --danger: #C0392B;
+            --text: #1C1917;
+            --accent: #6BAED6;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--shell);
+            color: var(--text);
+            min-height: 100vh;
+            font-size: 14px;
+            line-height: 1.5
+        }
+
+        .app-header {
+            background: var(--shell-mid);
+            border-bottom: 1px solid var(--shell-hi);
+            padding: 11px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 200
+        }
+
+        .app-logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 19px;
+            color: #fff
+        }
+
+        .app-logo span {
+            color: var(--accent)
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 13px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif
+        }
+
+        .btn-primary {
+            background: var(--ink);
+            color: #fff
+        }
+
+        .btn-primary:hover {
+            background: var(--ink-light)
+        }
+
+        .btn-sage {
+            background: var(--sage);
+            color: #fff
+        }
+
+        .btn-sage:hover {
+            background: #3d6b4a
+        }
+
+        .btn-accent {
+            background: #1e5f8c;
+            color: #fff
+        }
+
+        .btn-accent:hover {
+            background: #2476aa
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #aab4c0;
+            border: 1px solid var(--shell-hi)
+        }
+
+        .btn-ghost:hover {
+            background: var(--shell-hi);
+            color: #fff
+        }
+
+        .btn-danger-sm {
+            background: transparent;
+            color: #e57373;
+            border: none;
+            padding: 3px 7px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px
+        }
+
+        .btn-danger-sm:hover {
+            color: var(--danger);
+            background: rgba(192, 57, 43, 0.1)
+        }
+
+        .btn-add-item {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            color: #7A90A8;
+            border: 1px dashed var(--shell-hi);
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            margin-top: 8px;
+            transition: all 0.15s
+        }
+
+        .btn-add-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border-color: #4A6A8C
+        }
+
+        .app-body {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: calc(100vh - 49px)
+        }
+
+        .panel {
+            background: var(--shell-mid);
+            border-right: 1px solid var(--shell-hi);
+            overflow-y: auto;
+            height: calc(100vh - 49px);
+            position: sticky;
+            top: 49px
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--shell-hi)
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 9px 4px;
+            background: transparent;
+            border: none;
+            color: #7A90A8;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+            border-bottom: 2px solid transparent
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: rgba(107, 174, 214, 0.06)
+        }
+
+        .tab-content {
+            display: none;
+            padding: 16px
+        }
+
+        .tab-content.active {
+            display: block
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #5C7A9A;
+            margin-bottom: 8px;
+            margin-top: 14px
+        }
+
+        .section-label:first-child {
+            margin-top: 0
+        }
+
+        .field {
+            margin-bottom: 8px
+        }
+
+        .field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            color: #7A90A8;
+            margin-bottom: 3px
+        }
+
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+            background: var(--shell);
+            border: 1px solid var(--shell-hi);
+            border-radius: 5px;
+            padding: 6px 10px;
+            color: #E0E8F0;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            transition: border-color 0.15s;
+            outline: none
+        }
+
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-color: var(--ink-light);
+            box-shadow: 0 0 0 2px rgba(46, 91, 168, 0.2)
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 54px
+        }
+
+        .field select option {
+            background: var(--shell)
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px
+        }
+
+        .item-card {
+            background: var(--shell);
+            border: 1px solid var(--shell-hi);
+            border-radius: 6px;
+            padding: 9px;
+            margin-bottom: 7px
+        }
+
+        .item-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 6px
+        }
+
+        .item-card-head input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--shell-hi);
+            color: #E0E8F0;
+            font-size: 12px;
+            padding: 0 0 4px 0;
+            outline: none;
+            font-family: 'Inter', sans-serif
+        }
+
+        .item-card-head input:focus {
+            border-bottom-color: var(--ink-light)
+        }
+
+        .item-nums {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px
+        }
+
+        .item-nums input {
+            background: var(--shell-hi);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #E0E8F0;
+            font-size: 12px;
+            padding: 5px 7px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            width: 100%
+        }
+
+        .item-nums input:focus {
+            border-color: var(--ink-light)
+        }
+
+        .item-row3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 6px
+        }
+
+        .item-row3 input {
+            background: var(--shell-hi);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #E0E8F0;
+            font-size: 12px;
+            padding: 5px 7px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            width: 100%
+        }
+
+        .item-row3 input:focus {
+            border-color: var(--ink-light)
+        }
+
+        .item-amount-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px
+        }
+
+        .item-amount-row input {
+            background: var(--shell-hi);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #E0E8F0;
+            font-size: 12px;
+            padding: 5px 7px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            text-align: right;
+            font-weight: 600
+        }
+
+        .item-amount-row input:focus {
+            border-color: var(--ink-light)
+        }
+
+        .item-ready-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 7px;
+            padding-top: 7px;
+            border-top: 1px solid var(--shell-hi)
+        }
+
+        .item-ready-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #7A90A8;
+            cursor: pointer;
+            user-selecte: none;
+        }
+
+        .item-ready-row input[type=checkbox] {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--sage);
+            cursor: pointer
+        }
+
+        .item-ready-tag {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em
+        }
+
+        .item-ready-tag.ready {
+            background: rgba(74, 124, 89, 0.18);
+            color: #7FC993
+        }
+
+        .item-ready-tag.notready {
+            background: rgba(192, 57, 43, 0.16);
+            color: #E08070
+        }
+
+        /* ── Template Picker ── */
+        .tpl-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px
+        }
+
+        .tpl-card {
+            border: 2px solid var(--shell-hi);
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.15s;
+            background: var(--shell);
+            position: relative
+        }
+
+        .tpl-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px)
+        }
+
+        .tpl-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent)
+        }
+
+        .tpl-card .tpl-check {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 9px;
+            display: none;
+            align-items: center;
+            justify-content: center
+        }
+
+        .tpl-card.selected .tpl-check {
+            display: flex
+        }
+
+        .tpl-thumb {
+            width: 100%;
+            height: 80px;
+            display: block;
+            overflow: hidden
+        }
+
+        .tpl-name {
+            font-size: 10px;
+            font-weight: 600;
+            color: #aab4c0;
+            padding: 5px 7px;
+            text-align: center;
+            border-top: 1px solid var(--shell-hi)
+        }
+
+        /* ── Logo upload ── */
+        .logo-upload-area {
+            border: 2px dashed var(--shell-hi);
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative
+        }
+
+        .logo-upload-area:hover {
+            border-color: var(--ink-light);
+            background: rgba(46, 91, 168, 0.05)
+        }
+
+        .logo-upload-area input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%
+        }
+
+        .logo-preview {
+            max-height: 50px;
+            max-width: 120px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+            margin-bottom: 4px
+        }
+
+        .logo-hint {
+            font-size: 11px;
+            color: #5C7A9A
+        }
+
+        /* ── Inv list ── */
+        .inv-list-item {
+            background: var(--shell);
+            border: 1px solid var(--shell-hi);
+            border-radius: 6px;
+            padding: 9px 11px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.15s
+        }
+
+        .inv-list-item:hover {
+            border-color: var(--ink-light)
+        }
+
+        .inv-list-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .inv-list-num {
+            font-size: 12px;
+            font-weight: 600;
+            color: #E0E8F0
+        }
+
+        .inv-list-client {
+            font-size: 11px;
+            color: #7A90A8;
+            margin-top: 1px
+        }
+
+        .inv-list-total {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--sage)
+        }
+
+        .inv-list-date {
+            font-size: 10px;
+            color: #5C7A9A;
+            text-align: right
+        }
+
+        /* ── Sig pad ── */
+        #sigCanvas {
+            background: #fff;
+            border-radius: 6px;
+            cursor: crosshair;
+            display: block;
+            width: 100%;
+            touch-action: none
+        }
+
+        .sig-actions {
+            display: flex;
+            gap: 7px;
+            margin-top: 5px
+        }
+
+        /* ── Preview ── */
+        .preview-area {
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: #080f16;
+            overflow-y: auto
+        }
+
+        .invoice-sheet {
+            width: 794px;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6);
+            font-size: 12px;
+            line-height: 1.6;
+            color: #1C1917
+        }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center
+        }
+
+        .modal-overlay.open {
+            display: flex
+        }
+
+        .modal {
+            background: var(--shell-mid);
+            border: 1px solid var(--shell-hi);
+            border-radius: 10px;
+            padding: 22px;
+            width: 380px;
+            max-width: 94vw
+        }
+
+        .modal h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #E0E8F0;
+            margin-bottom: 14px
+        }
+
+        .modal .field input {
+            color: #E0E8F0
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+            justify-content: flex-end
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 13px;
+            border-radius: 7px;
+            border: 1px solid var(--shell-hi);
+            background: var(--shell);
+            color: #E0E8F0;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s;
+            width: 100%;
+            margin-bottom: 7px
+        }
+
+        .share-btn:hover {
+            background: var(--shell-hi);
+            border-color: var(--ink-light)
+        }
+
+        .share-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 18px;
+            right: 18px;
+            background: var(--sage);
+            color: #fff;
+            padding: 9px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: all 0.2s;
+            z-index: 999;
+            pointer-events: none
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .toast.error {
+            background: var(--danger)
+        }
+
+        .panel::-webkit-scrollbar {
+            width: 3px
+        }
+
+        .panel::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        .panel::-webkit-scrollbar-thumb {
+            background: var(--shell-hi);
+            border-radius: 2px
+        }
+
+        .preview-area::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .preview-area::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        .preview-area::-webkit-scrollbar-thumb {
+            background: #1e2d3d;
+            border-radius: 2px
+        }
+
+        /* ════════════════════════════════════
+   20 INVOICE TEMPLATES
+   All styles scoped to .inv-tpl-N
+   ════════════════════════════════════ */
+
+        /* shared reset for all templates */
+        .invoice-sheet .inv-qr {
+            position: absolute;
+            bottom: 36px;
+            right: 48px;
+            opacity: 0.65
+        }
+
+        .invoice-sheet .inv-qr canvas,
+        .invoice-sheet .inv-qr img {
+            width: 60px !important;
+            height: 60px !important
+        }
+
+        /* status pill shared across templates */
+        .invoice-sheet .t-status {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 7px;
+            border-radius: 9px;
+            white-space: nowrap
+        }
+
+        .invoice-sheet .t-status.ready {
+            background: rgba(74, 124, 89, 0.18);
+            color: #2E6B3F
+        }
+
+        .invoice-sheet .t-status.notready {
+            background: rgba(192, 57, 43, 0.14);
+            color: #A33125
+        }
+
+        /* ── T01: Classic Navy ── */
+        .inv-tpl-1 {
+            padding: 52px 56px 52px 72px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-1::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            background: linear-gradient(180deg, #1B3A6B, #4A7C59)
+        }
+
+        .inv-tpl-1 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-1 .t-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 26px;
+            color: #1B3A6B;
+            letter-spacing: -0.3px
+        }
+
+        .inv-tpl-1 .t-tagline {
+            font-size: 11px;
+            color: #8C8680;
+            margin-top: 1px
+        }
+
+        .inv-tpl-1 .t-from {
+            font-size: 11px;
+            color: #4A4540;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-1 .t-inv-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 34px;
+            color: #1B3A6B;
+            letter-spacing: -1px;
+            text-align: right;
+            margin-bottom: 12px
+        }
+
+        .inv-tpl-1 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
+            margin-bottom: 2px;
+            font-size: 11px
+        }
+
+        .inv-tpl-1 .t-meta-key {
+            color: #8C8680
+        }
+
+        .inv-tpl-1 .t-meta-val {
+            font-weight: 500;
+            color: #1C1917
+        }
+
+        .inv-tpl-1 .t-bill {
+            background: #F0EDE8;
+            border-radius: 5px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-1 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #8C8680;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-1 .t-bill-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1B3A6B
+        }
+
+        .inv-tpl-1 .t-bill-detail {
+            font-size: 11px;
+            color: #5A5550;
+            line-height: 1.7
+        }
+
+        .inv-tpl-1 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #1B3A6B;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-1 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.75)
+        }
+
+        .inv-tpl-1 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-1 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #DDD9D3;
+            align-items: center
+        }
+
+        .inv-tpl-1 .t-row:nth-child(even) {
+            background: #FAFAF8
+        }
+
+        .inv-tpl-1 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px
+        }
+
+        .inv-tpl-1 .t-row .t-row-total {
+            font-weight: 500
+        }
+
+        .inv-tpl-1 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-1 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-1 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-1 .t-trow .tk {
+            color: #8C8680
+        }
+
+        .inv-tpl-1 .t-trow .tv {
+            font-weight: 500
+        }
+
+        .inv-tpl-1 .t-trow.grand {
+            background: #1B3A6B;
+            border-radius: 4px;
+            margin-top: 3px
+        }
+
+        .inv-tpl-1 .t-trow.grand .tk,
+        .inv-tpl-1 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .inv-tpl-1 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #DDD9D3;
+            font-size: 11px
+        }
+
+        .inv-tpl-1 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #8C8680;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-1 .t-logo {
+            max-height: 52px;
+            max-width: 130px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-1 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #DDD9D3;
+            display: none
+        }
+
+        .inv-tpl-1 .t-sig-wrap img {
+            max-height: 56px;
+            max-width: 160px
+        }
+
+        .inv-tpl-1 .t-sig-label {
+            font-size: 9px;
+            color: #8C8680;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T02: Minimal White ── */
+        .inv-tpl-2 {
+            padding: 56px 60px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #fff
+        }
+
+        .inv-tpl-2 .t-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #111
+        }
+
+        .inv-tpl-2 .t-brand {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: -0.5px
+        }
+
+        .inv-tpl-2 .t-tagline {
+            font-size: 11px;
+            color: #999;
+            margin-top: 2px
+        }
+
+        .inv-tpl-2 .t-from {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-2 .t-inv-title {
+            font-size: 40px;
+            font-weight: 300;
+            color: #111;
+            letter-spacing: -2px;
+            text-align: right
+        }
+
+        .inv-tpl-2 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-2 .t-meta-key {
+            color: #999
+        }
+
+        .inv-tpl-2 .t-meta-val {
+            color: #111;
+            font-weight: 500
+        }
+
+        .inv-tpl-2 .t-bill {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px
+        }
+
+        .inv-tpl-2 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #999;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-2 .t-bill-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111
+        }
+
+        .inv-tpl-2 .t-bill-detail {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.8
+        }
+
+        .inv-tpl-2 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 6px 0;
+            border-bottom: 2px solid #111;
+            margin-bottom: 2px
+        }
+
+        .inv-tpl-2 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #111
+        }
+
+        .inv-tpl-2 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-2 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            align-items: center
+        }
+
+        .inv-tpl-2 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #444
+        }
+
+        .inv-tpl-2 .t-row .t-row-total {
+            font-weight: 600;
+            color: #111
+        }
+
+        .inv-tpl-2 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 20px 0 32px
+        }
+
+        .inv-tpl-2 .t-tbox {
+            width: 220px
+        }
+
+        .inv-tpl-2 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #f0f0f0
+        }
+
+        .inv-tpl-2 .t-trow .tk {
+            color: #999
+        }
+
+        .inv-tpl-2 .t-trow .tv {
+            font-weight: 500;
+            color: #111
+        }
+
+        .inv-tpl-2 .t-trow.grand {
+            border-bottom: none;
+            border-top: 2px solid #111;
+            padding-top: 10px;
+            margin-top: 6px
+        }
+
+        .inv-tpl-2 .t-trow.grand .tk,
+        .inv-tpl-2 .t-trow.grand .tv {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111
+        }
+
+        .inv-tpl-2 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #eee;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-2 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #999;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-2 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 6px;
+            display: block
+        }
+
+        .inv-tpl-2 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+            display: none
+        }
+
+        .inv-tpl-2 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-2 .t-sig-label {
+            font-size: 9px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T03: Dark Executive ── */
+        .inv-tpl-3 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #0F1923;
+            color: #E0E8F0
+        }
+
+        .inv-tpl-3 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start;
+            padding-bottom: 28px;
+            border-bottom: 1px solid #243347
+        }
+
+        .inv-tpl-3 .t-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            color: #6BAED6;
+            letter-spacing: -0.5px
+        }
+
+        .inv-tpl-3 .t-tagline {
+            font-size: 11px;
+            color: #5C7A9A;
+            margin-top: 1px
+        }
+
+        .inv-tpl-3 .t-from {
+            font-size: 11px;
+            color: #7A90A8;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-3 .t-inv-title {
+            font-size: 36px;
+            font-weight: 300;
+            color: #fff;
+            letter-spacing: -2px;
+            text-align: right
+        }
+
+        .inv-tpl-3 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-3 .t-meta-key {
+            color: #5C7A9A
+        }
+
+        .inv-tpl-3 .t-meta-val {
+            color: #E0E8F0;
+            font-weight: 500
+        }
+
+        .inv-tpl-3 .t-bill {
+            background: #1A2738;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            border: 1px solid #243347
+        }
+
+        .inv-tpl-3 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #5C7A9A;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-3 .t-bill-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #6BAED6
+        }
+
+        .inv-tpl-3 .t-bill-detail {
+            font-size: 11px;
+            color: #7A90A8;
+            line-height: 1.7
+        }
+
+        .inv-tpl-3 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #1A2738;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid #243347;
+            border-bottom: none
+        }
+
+        .inv-tpl-3 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #5C7A9A
+        }
+
+        .inv-tpl-3 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-3 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #243347;
+            border-left: 1px solid #243347;
+            border-right: 1px solid #243347;
+            align-items: center
+        }
+
+        .inv-tpl-3 .t-row:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02)
+        }
+
+        .inv-tpl-3 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #aab4c0
+        }
+
+        .inv-tpl-3 .t-row .t-row-total {
+            font-weight: 500;
+            color: #E0E8F0
+        }
+
+        .inv-tpl-3 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-3 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-3 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-3 .t-trow .tk {
+            color: #5C7A9A
+        }
+
+        .inv-tpl-3 .t-trow .tv {
+            font-weight: 500;
+            color: #E0E8F0
+        }
+
+        .inv-tpl-3 .t-trow.grand {
+            background: #6BAED6;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-3 .t-trow.grand .tk,
+        .inv-tpl-3 .t-trow.grand .tv {
+            color: #0F1923;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-3 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #243347;
+            font-size: 11px;
+            color: #7A90A8
+        }
+
+        .inv-tpl-3 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #5C7A9A;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-3 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+            filter: brightness(2)
+        }
+
+        .inv-tpl-3 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #243347;
+            display: none
+        }
+
+        .inv-tpl-3 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px;
+            filter: invert(1) brightness(2)
+        }
+
+        .inv-tpl-3 .t-sig-label {
+            font-size: 9px;
+            color: #5C7A9A;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T04: Rose Gold ── */
+        .inv-tpl-4 {
+            padding: 52px 56px 52px 68px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #fff
+        }
+
+        .inv-tpl-4::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #C9916A, #E8C4A2, #C9916A)
+        }
+
+        .inv-tpl-4 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-4 .t-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: #8B5E3C;
+            letter-spacing: -0.3px
+        }
+
+        .inv-tpl-4 .t-tagline {
+            font-size: 11px;
+            color: #C9916A;
+            margin-top: 1px;
+            font-style: italic
+        }
+
+        .inv-tpl-4 .t-from {
+            font-size: 11px;
+            color: #7A6A5A;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-4 .t-inv-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 34px;
+            color: #8B5E3C;
+            text-align: right
+        }
+
+        .inv-tpl-4 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-4 .t-meta-key {
+            color: #C9916A
+        }
+
+        .inv-tpl-4 .t-meta-val {
+            color: #5A3D28;
+            font-weight: 500
+        }
+
+        .inv-tpl-4 .t-bill {
+            background: #FDF5EE;
+            border: 1px solid #E8C4A2;
+            border-radius: 5px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-4 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #C9916A;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-4 .t-bill-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #8B5E3C
+        }
+
+        .inv-tpl-4 .t-bill-detail {
+            font-size: 11px;
+            color: #7A6A5A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-4 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #8B5E3C;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-4 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-4 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-4 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #F0D8C0;
+            align-items: center
+        }
+
+        .inv-tpl-4 .t-row:nth-child(even) {
+            background: #FDF5EE
+        }
+
+        .inv-tpl-4 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #7A6A5A
+        }
+
+        .inv-tpl-4 .t-row .t-row-total {
+            font-weight: 500;
+            color: #5A3D28
+        }
+
+        .inv-tpl-4 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-4 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-4 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-4 .t-trow .tk {
+            color: #C9916A
+        }
+
+        .inv-tpl-4 .t-trow .tv {
+            font-weight: 500;
+            color: #5A3D28
+        }
+
+        .inv-tpl-4 .t-trow.grand {
+            background: #8B5E3C;
+            border-radius: 4px;
+            margin-top: 3px
+        }
+
+        .inv-tpl-4 .t-trow.grand .tk,
+        .inv-tpl-4 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .inv-tpl-4 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #E8C4A2;
+            font-size: 11px;
+            color: #7A6A5A
+        }
+
+        .inv-tpl-4 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #C9916A;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-4 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-4 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #E8C4A2;
+            display: none
+        }
+
+        .inv-tpl-4 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-4 .t-sig-label {
+            font-size: 9px;
+            color: #C9916A;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T05: Emerald ── */
+        .inv-tpl-5 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #fff
+        }
+
+        .inv-tpl-5::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #1A6B45
+        }
+
+        .inv-tpl-5 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-5 .t-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A6B45;
+            letter-spacing: -0.3px
+        }
+
+        .inv-tpl-5 .t-tagline {
+            font-size: 11px;
+            color: #4A9A6F;
+            margin-top: 1px
+        }
+
+        .inv-tpl-5 .t-from {
+            font-size: 11px;
+            color: #555;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-5 .t-inv-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #1A6B45;
+            letter-spacing: -1px;
+            text-align: right
+        }
+
+        .inv-tpl-5 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-5 .t-meta-key {
+            color: #4A9A6F
+        }
+
+        .inv-tpl-5 .t-meta-val {
+            color: #1A3326;
+            font-weight: 600
+        }
+
+        .inv-tpl-5 .t-bill {
+            background: #F0FAF5;
+            border-left: 3px solid #1A6B45;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-5 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #4A9A6F;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-5 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #1A6B45
+        }
+
+        .inv-tpl-5 .t-bill-detail {
+            font-size: 11px;
+            color: #556B5A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-5 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #1A6B45;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-5 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-5 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-5 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #D0EAD9;
+            align-items: center
+        }
+
+        .inv-tpl-5 .t-row:nth-child(even) {
+            background: #F0FAF5
+        }
+
+        .inv-tpl-5 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #555
+        }
+
+        .inv-tpl-5 .t-row .t-row-total {
+            font-weight: 600;
+            color: #1A3326
+        }
+
+        .inv-tpl-5 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-5 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-5 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-5 .t-trow .tk {
+            color: #4A9A6F
+        }
+
+        .inv-tpl-5 .t-trow .tv {
+            font-weight: 500;
+            color: #1A3326
+        }
+
+        .inv-tpl-5 .t-trow.grand {
+            background: #1A6B45;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-5 .t-trow.grand .tk,
+        .inv-tpl-5 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-5 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #D0EAD9;
+            font-size: 11px;
+            color: #556B5A
+        }
+
+        .inv-tpl-5 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #4A9A6F;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-5 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-5 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #D0EAD9;
+            display: none
+        }
+
+        .inv-tpl-5 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-5 .t-sig-label {
+            font-size: 9px;
+            color: #4A9A6F;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T06: Slate Modern ── */
+        .inv-tpl-6 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Space Grotesk', sans-serif;
+            background: #F8F9FA
+        }
+
+        .inv-tpl-6 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start;
+            background: #2B3A4A;
+            margin: -52px -56px 36px;
+            padding: 36px 56px
+        }
+
+        .inv-tpl-6 .t-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px
+        }
+
+        .inv-tpl-6 .t-tagline {
+            font-size: 11px;
+            color: #8AAAC0;
+            margin-top: 2px
+        }
+
+        .inv-tpl-6 .t-from {
+            font-size: 11px;
+            color: #8AAAC0;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-6 .t-inv-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -2px;
+            text-align: right
+        }
+
+        .inv-tpl-6 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-6 .t-meta-key {
+            color: #8AAAC0
+        }
+
+        .inv-tpl-6 .t-meta-val {
+            color: #fff;
+            font-weight: 600
+        }
+
+        .inv-tpl-6 .t-bill {
+            background: #fff;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06)
+        }
+
+        .inv-tpl-6 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #8AAAC0;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-6 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #2B3A4A
+        }
+
+        .inv-tpl-6 .t-bill-detail {
+            font-size: 11px;
+            color: #6B7A8A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-6 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 12px;
+            background: #2B3A4A;
+            border-radius: 6px 6px 0 0
+        }
+
+        .inv-tpl-6 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.7)
+        }
+
+        .inv-tpl-6 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-6 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 12px;
+            border-bottom: 1px solid #E8ECF0;
+            background: #fff;
+            align-items: center
+        }
+
+        .inv-tpl-6 .t-row:nth-child(even) {
+            background: #F8F9FA
+        }
+
+        .inv-tpl-6 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #6B7A8A
+        }
+
+        .inv-tpl-6 .t-row .t-row-total {
+            font-weight: 700;
+            color: #2B3A4A
+        }
+
+        .inv-tpl-6 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-6 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-6 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 12px;
+            font-size: 12px
+        }
+
+        .inv-tpl-6 .t-trow .tk {
+            color: #8AAAC0
+        }
+
+        .inv-tpl-6 .t-trow .tv {
+            font-weight: 600;
+            color: #2B3A4A
+        }
+
+        .inv-tpl-6 .t-trow.grand {
+            background: #2B3A4A;
+            border-radius: 6px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-6 .t-trow.grand .tk,
+        .inv-tpl-6 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-6 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #E0E4E8;
+            font-size: 11px;
+            color: #6B7A8A
+        }
+
+        .inv-tpl-6 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #8AAAC0;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-6 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+            filter: brightness(10)
+        }
+
+        .inv-tpl-6 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #E0E4E8;
+            display: none
+        }
+
+        .inv-tpl-6 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-6 .t-sig-label {
+            font-size: 9px;
+            color: #8AAAC0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T07: Purple Creative ── */
+        .inv-tpl-7 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #fff
+        }
+
+        .inv-tpl-7::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 10px;
+            background: linear-gradient(180deg, #6B35A8, #A855F7)
+        }
+
+        .inv-tpl-7::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+            pointer-events: none
+        }
+
+        .inv-tpl-7 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-7 .t-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #6B35A8;
+            letter-spacing: -0.5px
+        }
+
+        .inv-tpl-7 .t-tagline {
+            font-size: 11px;
+            color: #A855F7;
+            margin-top: 1px
+        }
+
+        .inv-tpl-7 .t-from {
+            font-size: 11px;
+            color: #6A5A7A;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-7 .t-inv-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #6B35A8;
+            letter-spacing: -1px;
+            text-align: right
+        }
+
+        .inv-tpl-7 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-7 .t-meta-key {
+            color: #A855F7
+        }
+
+        .inv-tpl-7 .t-meta-val {
+            color: #3D1A6B;
+            font-weight: 500
+        }
+
+        .inv-tpl-7 .t-bill {
+            background: #FAF5FF;
+            border: 1px solid #E9D5FF;
+            border-radius: 8px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-7 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #A855F7;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-7 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #6B35A8
+        }
+
+        .inv-tpl-7 .t-bill-detail {
+            font-size: 11px;
+            color: #6A5A7A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-7 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: linear-gradient(90deg, #6B35A8, #A855F7);
+            border-radius: 6px 6px 0 0
+        }
+
+        .inv-tpl-7 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.9)
+        }
+
+        .inv-tpl-7 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-7 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #EDE9F4;
+            align-items: center
+        }
+
+        .inv-tpl-7 .t-row:nth-child(even) {
+            background: #FAF5FF
+        }
+
+        .inv-tpl-7 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #6A5A7A
+        }
+
+        .inv-tpl-7 .t-row .t-row-total {
+            font-weight: 600;
+            color: #3D1A6B
+        }
+
+        .inv-tpl-7 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-7 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-7 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-7 .t-trow .tk {
+            color: #A855F7
+        }
+
+        .inv-tpl-7 .t-trow .tv {
+            font-weight: 500;
+            color: #3D1A6B
+        }
+
+        .inv-tpl-7 .t-trow.grand {
+            background: linear-gradient(90deg, #6B35A8, #A855F7);
+            border-radius: 5px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-7 .t-trow.grand .tk,
+        .inv-tpl-7 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-7 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #EDE9F4;
+            font-size: 11px;
+            color: #6A5A7A
+        }
+
+        .inv-tpl-7 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #A855F7;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-7 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-7 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #EDE9F4;
+            display: none
+        }
+
+        .inv-tpl-7 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-7 .t-sig-label {
+            font-size: 9px;
+            color: #A855F7;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T08: Crimson ── */
+        .inv-tpl-8 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #fff
+        }
+
+        .inv-tpl-8::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #B91C1C
+        }
+
+        .inv-tpl-8 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-8 .t-brand {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #7F1D1D;
+            letter-spacing: -0.3px
+        }
+
+        .inv-tpl-8 .t-tagline {
+            font-size: 11px;
+            color: #B91C1C;
+            font-style: italic;
+            margin-top: 2px
+        }
+
+        .inv-tpl-8 .t-from {
+            font-size: 11px;
+            color: #555;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-8 .t-inv-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #7F1D1D;
+            text-align: right
+        }
+
+        .inv-tpl-8 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-8 .t-meta-key {
+            color: #B91C1C
+        }
+
+        .inv-tpl-8 .t-meta-val {
+            color: #3B0808;
+            font-weight: 500
+        }
+
+        .inv-tpl-8 .t-bill {
+            background: #FEF2F2;
+            border-left: 3px solid #B91C1C;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-8 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #B91C1C;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-8 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #7F1D1D
+        }
+
+        .inv-tpl-8 .t-bill-detail {
+            font-size: 11px;
+            color: #7A5A5A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-8 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #7F1D1D
+        }
+
+        .inv-tpl-8 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-8 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-8 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #FECACA;
+            align-items: center
+        }
+
+        .inv-tpl-8 .t-row:nth-child(even) {
+            background: #FEF2F2
+        }
+
+        .inv-tpl-8 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #7A5A5A
+        }
+
+        .inv-tpl-8 .t-row .t-row-total {
+            font-weight: 600;
+            color: #3B0808
+        }
+
+        .inv-tpl-8 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-8 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-8 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-8 .t-trow .tk {
+            color: #B91C1C
+        }
+
+        .inv-tpl-8 .t-trow .tv {
+            font-weight: 500;
+            color: #3B0808
+        }
+
+        .inv-tpl-8 .t-trow.grand {
+            background: #7F1D1D;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-8 .t-trow.grand .tk,
+        .inv-tpl-8 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-8 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #FECACA;
+            font-size: 11px;
+            color: #7A5A5A
+        }
+
+        .inv-tpl-8 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #B91C1C;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-8 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-8 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #FECACA;
+            display: none
+        }
+
+        .inv-tpl-8 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-8 .t-sig-label {
+            font-size: 9px;
+            color: #B91C1C;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T09: Ocean Blue ── */
+        .inv-tpl-9 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #EFF6FF
+        }
+
+        .inv-tpl-9 .t-head {
+            background: linear-gradient(135deg, #1D4ED8, #0EA5E9);
+            margin: -52px -56px 36px;
+            padding: 40px 56px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            align-items: start
+        }
+
+        .inv-tpl-9 .t-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .inv-tpl-9 .t-tagline {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px
+        }
+
+        .inv-tpl-9 .t-from {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-9 .t-inv-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            text-align: right
+        }
+
+        .inv-tpl-9 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-9 .t-meta-key {
+            color: rgba(255, 255, 255, 0.6)
+        }
+
+        .inv-tpl-9 .t-meta-val {
+            color: #fff;
+            font-weight: 600
+        }
+
+        .inv-tpl-9 .t-bill {
+            background: #fff;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            box-shadow: 0 2px 8px rgba(29, 78, 216, 0.1)
+        }
+
+        .inv-tpl-9 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #0EA5E9;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-9 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #1D4ED8
+        }
+
+        .inv-tpl-9 .t-bill-detail {
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.7
+        }
+
+        .inv-tpl-9 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #1D4ED8;
+            border-radius: 6px 6px 0 0
+        }
+
+        .inv-tpl-9 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.8)
+        }
+
+        .inv-tpl-9 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-9 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #BFDBFE;
+            background: #fff;
+            align-items: center
+        }
+
+        .inv-tpl-9 .t-row:nth-child(even) {
+            background: #EFF6FF
+        }
+
+        .inv-tpl-9 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #475569
+        }
+
+        .inv-tpl-9 .t-row .t-row-total {
+            font-weight: 600;
+            color: #1D4ED8
+        }
+
+        .inv-tpl-9 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-9 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-9 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-9 .t-trow .tk {
+            color: #0EA5E9
+        }
+
+        .inv-tpl-9 .t-trow .tv {
+            font-weight: 600;
+            color: #1D4ED8
+        }
+
+        .inv-tpl-9 .t-trow.grand {
+            background: linear-gradient(90deg, #1D4ED8, #0EA5E9);
+            border-radius: 6px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-9 .t-trow.grand .tk,
+        .inv-tpl-9 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-9 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #BFDBFE;
+            font-size: 11px;
+            color: #475569
+        }
+
+        .inv-tpl-9 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #0EA5E9;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-9 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+            filter: brightness(10)
+        }
+
+        .inv-tpl-9 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #BFDBFE;
+            display: none
+        }
+
+        .inv-tpl-9 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-9 .t-sig-label {
+            font-size: 9px;
+            color: #0EA5E9;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T10: Newspaper ── */
+        .inv-tpl-10 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Libre Baskerville', serif;
+            background: #FFF9F0
+        }
+
+        .inv-tpl-10 .t-head {
+            border-bottom: 3px double #111;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            text-align: center
+        }
+
+        .inv-tpl-10 .t-brand {
+            font-size: 30px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 2px;
+            text-transform: uppercase
+        }
+
+        .inv-tpl-10 .t-tagline {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+            font-style: italic
+        }
+
+        .inv-tpl-10 .t-from {
+            font-size: 11px;
+            color: #444;
+            line-height: 1.8;
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-inv-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-10 .t-meta-area {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
+            color: #444;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #ccc
+        }
+
+        .inv-tpl-10 .t-meta-key {
+            color: #888
+        }
+
+        .inv-tpl-10 .t-bill {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #ccc
+        }
+
+        .inv-tpl-10 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #888;
+            margin-bottom: 3px;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-bill-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #111
+        }
+
+        .inv-tpl-10 .t-bill-detail {
+            font-size: 11px;
+            color: #555;
+            line-height: 1.8;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 6px 0;
+            border-top: 2px solid #111;
+            border-bottom: 1px solid #111;
+            margin-bottom: 2px
+        }
+
+        .inv-tpl-10 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #111;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-10 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+            font-family: 'Inter', sans-serif;
+            align-items: center
+        }
+
+        .inv-tpl-10 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #555
+        }
+
+        .inv-tpl-10 .t-row .t-row-total {
+            font-weight: 600;
+            color: #111
+        }
+
+        .inv-tpl-10 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 16px 0 24px
+        }
+
+        .inv-tpl-10 .t-tbox {
+            width: 220px;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #ddd
+        }
+
+        .inv-tpl-10 .t-trow .tk {
+            color: #888
+        }
+
+        .inv-tpl-10 .t-trow .tv {
+            font-weight: 500;
+            color: #111
+        }
+
+        .inv-tpl-10 .t-trow.grand {
+            border-top: 2px solid #111;
+            border-bottom: 2px solid #111;
+            padding: 8px 0;
+            margin-top: 4px
+        }
+
+        .inv-tpl-10 .t-trow.grand .tk,
+        .inv-tpl-10 .t-trow.grand .tv {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111
+        }
+
+        .inv-tpl-10 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #ccc;
+            font-size: 11px;
+            color: #555;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #888;
+            margin-bottom: 4px;
+            font-family: 'Inter', sans-serif
+        }
+
+        .inv-tpl-10 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin: 0 auto 8px;
+            display: block
+        }
+
+        .inv-tpl-10 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #ccc;
+            display: none
+        }
+
+        .inv-tpl-10 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-10 .t-sig-label {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px;
+            font-family: 'Inter', sans-serif
+        }
+
+        /* T11-T20 use shared skeleton with unique color tokens */
+        /* ── T11: Amber Warm ── */
+        .inv-tpl-11 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #FFFBEB
+        }
+
+        .inv-tpl-11::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #D97706, #F59E0B, #D97706)
+        }
+
+        .inv-tpl-11 .t-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #92400E
+        }
+
+        .inv-tpl-11 .t-tagline {
+            font-size: 11px;
+            color: #D97706;
+            margin-top: 1px
+        }
+
+        .inv-tpl-11 .t-from {
+            font-size: 11px;
+            color: #78580A;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-11 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-11 .t-inv-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #92400E;
+            text-align: right;
+            letter-spacing: -1px
+        }
+
+        .inv-tpl-11 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-11 .t-meta-key {
+            color: #D97706
+        }
+
+        .inv-tpl-11 .t-meta-val {
+            color: #451A03;
+            font-weight: 600
+        }
+
+        .inv-tpl-11 .t-bill {
+            background: #FEF3C7;
+            border-radius: 6px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            border: 1px solid #FDE68A
+        }
+
+        .inv-tpl-11 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #D97706;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-11 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #92400E
+        }
+
+        .inv-tpl-11 .t-bill-detail {
+            font-size: 11px;
+            color: #78580A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-11 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #92400E;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-11 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-11 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-11 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #FDE68A;
+            align-items: center
+        }
+
+        .inv-tpl-11 .t-row:nth-child(even) {
+            background: #FFFBEB
+        }
+
+        .inv-tpl-11 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #78580A
+        }
+
+        .inv-tpl-11 .t-row .t-row-total {
+            font-weight: 600;
+            color: #451A03
+        }
+
+        .inv-tpl-11 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-11 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-11 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-11 .t-trow .tk {
+            color: #D97706
+        }
+
+        .inv-tpl-11 .t-trow .tv {
+            font-weight: 500;
+            color: #451A03
+        }
+
+        .inv-tpl-11 .t-trow.grand {
+            background: #92400E;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-11 .t-trow.grand .tk,
+        .inv-tpl-11 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-11 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #FDE68A;
+            font-size: 11px;
+            color: #78580A
+        }
+
+        .inv-tpl-11 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #D97706;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-11 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-11 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #FDE68A;
+            display: none
+        }
+
+        .inv-tpl-11 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-11 .t-sig-label {
+            font-size: 9px;
+            color: #D97706;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* ── T12: Teal Fresh ── */
+        .inv-tpl-12 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif;
+            background: #F0FDFA
+        }
+
+        .inv-tpl-12::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(180deg, #0D9488, #06B6D4)
+        }
+
+        .inv-tpl-12 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-12 .t-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0D9488
+        }
+
+        .inv-tpl-12 .t-tagline {
+            font-size: 11px;
+            color: #06B6D4;
+            margin-top: 1px
+        }
+
+        .inv-tpl-12 .t-from {
+            font-size: 11px;
+            color: #4A6665;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-12 .t-inv-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #0D9488;
+            text-align: right
+        }
+
+        .inv-tpl-12 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-12 .t-meta-key {
+            color: #06B6D4
+        }
+
+        .inv-tpl-12 .t-meta-val {
+            color: #134E4A;
+            font-weight: 600
+        }
+
+        .inv-tpl-12 .t-bill {
+            background: #CCFBF1;
+            border-radius: 6px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-12 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #06B6D4;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-12 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #0D9488
+        }
+
+        .inv-tpl-12 .t-bill-detail {
+            font-size: 11px;
+            color: #4A6665;
+            line-height: 1.7
+        }
+
+        .inv-tpl-12 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: linear-gradient(90deg, #0D9488, #06B6D4);
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-12 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.9)
+        }
+
+        .inv-tpl-12 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-12 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #CCFBF1;
+            align-items: center
+        }
+
+        .inv-tpl-12 .t-row:nth-child(even) {
+            background: #F0FDFA
+        }
+
+        .inv-tpl-12 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #4A6665
+        }
+
+        .inv-tpl-12 .t-row .t-row-total {
+            font-weight: 600;
+            color: #134E4A
+        }
+
+        .inv-tpl-12 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-12 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-12 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-12 .t-trow .tk {
+            color: #06B6D4
+        }
+
+        .inv-tpl-12 .t-trow .tv {
+            font-weight: 600;
+            color: #134E4A
+        }
+
+        .inv-tpl-12 .t-trow.grand {
+            background: linear-gradient(90deg, #0D9488, #06B6D4);
+            border-radius: 5px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-12 .t-trow.grand .tk,
+        .inv-tpl-12 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-12 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #CCFBF1;
+            font-size: 11px;
+            color: #4A6665
+        }
+
+        .inv-tpl-12 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #06B6D4;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-12 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-12 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #CCFBF1;
+            display: none
+        }
+
+        .inv-tpl-12 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-12 .t-sig-label {
+            font-size: 9px;
+            color: #06B6D4;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T13-T20: reuse t-tpl-1 base layout, swap colors only */
+        .inv-tpl-13,
+        .inv-tpl-14,
+        .inv-tpl-15,
+        .inv-tpl-16,
+        .inv-tpl-17,
+        .inv-tpl-18,
+        .inv-tpl-19,
+        .inv-tpl-20 {
+            padding: 52px 56px;
+            min-height: 960px;
+            font-family: 'Inter', sans-serif
+        }
+
+        /* T13: Midnight Violet */
+        .inv-tpl-13 {
+            background: #1A0A2E
+        }
+
+        .inv-tpl-13 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-13 .t-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #C084FC;
+            letter-spacing: -0.5px
+        }
+
+        .inv-tpl-13 .t-tagline {
+            font-size: 11px;
+            color: #7C3AED;
+            margin-top: 1px
+        }
+
+        .inv-tpl-13 .t-from {
+            font-size: 11px;
+            color: #9A7AB0;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-13 .t-inv-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #C084FC;
+            text-align: right
+        }
+
+        .inv-tpl-13 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-13 .t-meta-key {
+            color: #7C3AED
+        }
+
+        .inv-tpl-13 .t-meta-val {
+            color: #E9D5FF;
+            font-weight: 500
+        }
+
+        .inv-tpl-13 .t-bill {
+            background: #2D1A4A;
+            border: 1px solid #4C1D95;
+            border-radius: 8px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-13 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #7C3AED;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-13 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #C084FC
+        }
+
+        .inv-tpl-13 .t-bill-detail {
+            font-size: 11px;
+            color: #9A7AB0;
+            line-height: 1.7
+        }
+
+        .inv-tpl-13 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #4C1D95;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-13 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.7)
+        }
+
+        .inv-tpl-13 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-13 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #2D1A4A;
+            align-items: center
+        }
+
+        .inv-tpl-13 .t-row:nth-child(even) {
+            background: #2D1A4A
+        }
+
+        .inv-tpl-13 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #9A7AB0
+        }
+
+        .inv-tpl-13 .t-row .t-row-total {
+            font-weight: 600;
+            color: #E9D5FF
+        }
+
+        .inv-tpl-13 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-13 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-13 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: #9A7AB0
+        }
+
+        .inv-tpl-13 .t-trow .tk {
+            color: #7C3AED
+        }
+
+        .inv-tpl-13 .t-trow .tv {
+            font-weight: 500;
+            color: #E9D5FF
+        }
+
+        .inv-tpl-13 .t-trow.grand {
+            background: #4C1D95;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-13 .t-trow.grand .tk,
+        .inv-tpl-13 .t-trow.grand .tv {
+            color: #C084FC;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-13 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #2D1A4A;
+            font-size: 11px;
+            color: #9A7AB0
+        }
+
+        .inv-tpl-13 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #7C3AED;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-13 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+            filter: brightness(5)
+        }
+
+        .inv-tpl-13 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #2D1A4A;
+            display: none
+        }
+
+        .inv-tpl-13 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px;
+            filter: invert(1) brightness(2)
+        }
+
+        .inv-tpl-13 .t-sig-label {
+            font-size: 9px;
+            color: #7C3AED;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T14: Coral Pink */
+        .inv-tpl-14 {
+            background: #FFF1F2
+        }
+
+        .inv-tpl-14::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FB7185, #F43F5E)
+        }
+
+        .inv-tpl-14 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-14 .t-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: #BE123C
+        }
+
+        .inv-tpl-14 .t-tagline {
+            font-size: 11px;
+            color: #FB7185;
+            font-style: italic;
+            margin-top: 1px
+        }
+
+        .inv-tpl-14 .t-from {
+            font-size: 11px;
+            color: #7A4A50;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-14 .t-inv-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            color: #BE123C;
+            text-align: right
+        }
+
+        .inv-tpl-14 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-14 .t-meta-key {
+            color: #FB7185
+        }
+
+        .inv-tpl-14 .t-meta-val {
+            color: #4C0519;
+            font-weight: 500
+        }
+
+        .inv-tpl-14 .t-bill {
+            background: #FFE4E6;
+            border-radius: 8px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-14 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #FB7185;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-14 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #BE123C
+        }
+
+        .inv-tpl-14 .t-bill-detail {
+            font-size: 11px;
+            color: #7A4A50;
+            line-height: 1.7
+        }
+
+        .inv-tpl-14 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #BE123C;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-14 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.9)
+        }
+
+        .inv-tpl-14 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-14 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #FECDD3;
+            align-items: center
+        }
+
+        .inv-tpl-14 .t-row:nth-child(even) {
+            background: #FFF1F2
+        }
+
+        .inv-tpl-14 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #7A4A50
+        }
+
+        .inv-tpl-14 .t-row .t-row-total {
+            font-weight: 600;
+            color: #4C0519
+        }
+
+        .inv-tpl-14 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-14 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-14 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-14 .t-trow .tk {
+            color: #FB7185
+        }
+
+        .inv-tpl-14 .t-trow .tv {
+            font-weight: 500;
+            color: #4C0519
+        }
+
+        .inv-tpl-14 .t-trow.grand {
+            background: #BE123C;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-14 .t-trow.grand .tk,
+        .inv-tpl-14 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-14 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #FECDD3;
+            font-size: 11px;
+            color: #7A4A50
+        }
+
+        .inv-tpl-14 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #FB7185;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-14 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-14 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #FECDD3;
+            display: none
+        }
+
+        .inv-tpl-14 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-14 .t-sig-label {
+            font-size: 9px;
+            color: #FB7185;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T15: Forest Sage — green/tan */
+        .inv-tpl-15 {
+            background: #F6F7F2
+        }
+
+        .inv-tpl-15::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #3D6B2F
+        }
+
+        .inv-tpl-15 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-15 .t-brand {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 24px;
+            color: #2D4A22
+        }
+
+        .inv-tpl-15 .t-tagline {
+            font-size: 11px;
+            color: #6B9A5A;
+            margin-top: 1px;
+            font-style: italic
+        }
+
+        .inv-tpl-15 .t-from {
+            font-size: 11px;
+            color: #556A4A;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-15 .t-inv-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 30px;
+            color: #2D4A22;
+            text-align: right
+        }
+
+        .inv-tpl-15 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-15 .t-meta-key {
+            color: #6B9A5A
+        }
+
+        .inv-tpl-15 .t-meta-val {
+            color: #1A2E14;
+            font-weight: 500
+        }
+
+        .inv-tpl-15 .t-bill {
+            background: #E8F0E2;
+            border: 1px solid #B5D0A8;
+            border-radius: 5px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-15 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #6B9A5A;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-15 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #2D4A22
+        }
+
+        .inv-tpl-15 .t-bill-detail {
+            font-size: 11px;
+            color: #556A4A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-15 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #2D4A22;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-15 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.8)
+        }
+
+        .inv-tpl-15 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-15 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #B5D0A8;
+            align-items: center
+        }
+
+        .inv-tpl-15 .t-row:nth-child(even) {
+            background: #E8F0E2
+        }
+
+        .inv-tpl-15 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #556A4A
+        }
+
+        .inv-tpl-15 .t-row .t-row-total {
+            font-weight: 600;
+            color: #1A2E14
+        }
+
+        .inv-tpl-15 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-15 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-15 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-15 .t-trow .tk {
+            color: #6B9A5A
+        }
+
+        .inv-tpl-15 .t-trow .tv {
+            font-weight: 500;
+            color: #1A2E14
+        }
+
+        .inv-tpl-15 .t-trow.grand {
+            background: #2D4A22;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-15 .t-trow.grand .tk,
+        .inv-tpl-15 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-15 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #B5D0A8;
+            font-size: 11px;
+            color: #556A4A
+        }
+
+        .inv-tpl-15 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #6B9A5A;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-15 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-15 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #B5D0A8;
+            display: none
+        }
+
+        .inv-tpl-15 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-15 .t-sig-label {
+            font-size: 9px;
+            color: #6B9A5A;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T16: Sky Clean */
+        .inv-tpl-16 {
+            background: #F0F9FF
+        }
+
+        .inv-tpl-16 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-16 .t-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0369A1
+        }
+
+        .inv-tpl-16 .t-tagline {
+            font-size: 11px;
+            color: #38BDF8;
+            margin-top: 1px
+        }
+
+        .inv-tpl-16 .t-from {
+            font-size: 11px;
+            color: #4A6A7A;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-16 .t-inv-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #0369A1;
+            text-align: right;
+            letter-spacing: -1px
+        }
+
+        .inv-tpl-16 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-16 .t-meta-key {
+            color: #38BDF8
+        }
+
+        .inv-tpl-16 .t-meta-val {
+            color: #0C4A6E;
+            font-weight: 600
+        }
+
+        .inv-tpl-16 .t-bill {
+            background: #E0F2FE;
+            border-radius: 6px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-16 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #38BDF8;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-16 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #0369A1
+        }
+
+        .inv-tpl-16 .t-bill-detail {
+            font-size: 11px;
+            color: #4A6A7A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-16 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #0369A1;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-16 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-16 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-16 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #BAE6FD;
+            align-items: center
+        }
+
+        .inv-tpl-16 .t-row:nth-child(even) {
+            background: #E0F2FE
+        }
+
+        .inv-tpl-16 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #4A6A7A
+        }
+
+        .inv-tpl-16 .t-row .t-row-total {
+            font-weight: 600;
+            color: #0C4A6E
+        }
+
+        .inv-tpl-16 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-16 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-16 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-16 .t-trow .tk {
+            color: #38BDF8
+        }
+
+        .inv-tpl-16 .t-trow .tv {
+            font-weight: 600;
+            color: #0C4A6E
+        }
+
+        .inv-tpl-16 .t-trow.grand {
+            background: #0369A1;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-16 .t-trow.grand .tk,
+        .inv-tpl-16 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-16 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #BAE6FD;
+            font-size: 11px;
+            color: #4A6A7A
+        }
+
+        .inv-tpl-16 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #38BDF8;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-16 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-16 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #BAE6FD;
+            display: none
+        }
+
+        .inv-tpl-16 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-16 .t-sig-label {
+            font-size: 9px;
+            color: #38BDF8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T17: Carbon Dark */
+        .inv-tpl-17 {
+            background: #111;
+            color: #E0E0E0
+        }
+
+        .inv-tpl-17 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #333
+        }
+
+        .inv-tpl-17 .t-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px
+        }
+
+        .inv-tpl-17 .t-tagline {
+            font-size: 11px;
+            color: #666;
+            margin-top: 1px
+        }
+
+        .inv-tpl-17 .t-from {
+            font-size: 11px;
+            color: #888;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-17 .t-inv-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            text-align: right;
+            letter-spacing: -1px
+        }
+
+        .inv-tpl-17 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-17 .t-meta-key {
+            color: #555
+        }
+
+        .inv-tpl-17 .t-meta-val {
+            color: #ddd;
+            font-weight: 500
+        }
+
+        .inv-tpl-17 .t-bill {
+            background: #1A1A1A;
+            border: 1px solid #2A2A2A;
+            border-radius: 6px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-17 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #555;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-17 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff
+        }
+
+        .inv-tpl-17 .t-bill-detail {
+            font-size: 11px;
+            color: #888;
+            line-height: 1.7
+        }
+
+        .inv-tpl-17 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #222;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid #333;
+            border-bottom: none
+        }
+
+        .inv-tpl-17 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #555
+        }
+
+        .inv-tpl-17 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-17 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border: 1px solid #222;
+            border-top: none;
+            align-items: center
+        }
+
+        .inv-tpl-17 .t-row:nth-child(even) {
+            background: #1A1A1A
+        }
+
+        .inv-tpl-17 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #888
+        }
+
+        .inv-tpl-17 .t-row .t-row-total {
+            font-weight: 600;
+            color: #fff
+        }
+
+        .inv-tpl-17 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-17 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-17 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-17 .t-trow .tk {
+            color: #555
+        }
+
+        .inv-tpl-17 .t-trow .tv {
+            font-weight: 500;
+            color: #ddd
+        }
+
+        .inv-tpl-17 .t-trow.grand {
+            background: #fff;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-17 .t-trow.grand .tk,
+        .inv-tpl-17 .t-trow.grand .tv {
+            color: #111;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-17 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #2A2A2A;
+            font-size: 11px;
+            color: #888
+        }
+
+        .inv-tpl-17 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #555;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-17 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+            filter: brightness(5)
+        }
+
+        .inv-tpl-17 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #2A2A2A;
+            display: none
+        }
+
+        .inv-tpl-17 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px;
+            filter: invert(1) brightness(3)
+        }
+
+        .inv-tpl-17 .t-sig-label {
+            font-size: 9px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T18: Terracotta */
+        .inv-tpl-18 {
+            background: #FDF4EF
+        }
+
+        .inv-tpl-18::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: #C1440E
+        }
+
+        .inv-tpl-18 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-18 .t-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 26px;
+            color: #8B2500;
+            letter-spacing: -0.3px
+        }
+
+        .inv-tpl-18 .t-tagline {
+            font-size: 11px;
+            color: #C1440E;
+            font-style: italic;
+            margin-top: 1px
+        }
+
+        .inv-tpl-18 .t-from {
+            font-size: 11px;
+            color: #6B4A3A;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-18 .t-inv-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 30px;
+            color: #8B2500;
+            text-align: right
+        }
+
+        .inv-tpl-18 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-18 .t-meta-key {
+            color: #C1440E
+        }
+
+        .inv-tpl-18 .t-meta-val {
+            color: #3B0F00;
+            font-weight: 500
+        }
+
+        .inv-tpl-18 .t-bill {
+            background: #FAE8DE;
+            border: 1px solid #F2C4A8;
+            border-radius: 5px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-18 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #C1440E;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-18 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #8B2500
+        }
+
+        .inv-tpl-18 .t-bill-detail {
+            font-size: 11px;
+            color: #6B4A3A;
+            line-height: 1.7
+        }
+
+        .inv-tpl-18 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #8B2500;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-18 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-18 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-18 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #F2C4A8;
+            align-items: center
+        }
+
+        .inv-tpl-18 .t-row:nth-child(even) {
+            background: #FDF4EF
+        }
+
+        .inv-tpl-18 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #6B4A3A
+        }
+
+        .inv-tpl-18 .t-row .t-row-total {
+            font-weight: 600;
+            color: #3B0F00
+        }
+
+        .inv-tpl-18 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-18 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-18 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-18 .t-trow .tk {
+            color: #C1440E
+        }
+
+        .inv-tpl-18 .t-trow .tv {
+            font-weight: 500;
+            color: #3B0F00
+        }
+
+        .inv-tpl-18 .t-trow.grand {
+            background: #8B2500;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-18 .t-trow.grand .tk,
+        .inv-tpl-18 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-18 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #F2C4A8;
+            font-size: 11px;
+            color: #6B4A3A
+        }
+
+        .inv-tpl-18 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #C1440E;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-18 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-18 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #F2C4A8;
+            display: none
+        }
+
+        .inv-tpl-18 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-18 .t-sig-label {
+            font-size: 9px;
+            color: #C1440E;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T19: Mint & Charcoal */
+        .inv-tpl-19 {
+            background: #F2FDF9
+        }
+
+        .inv-tpl-19::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #10B981
+        }
+
+        .inv-tpl-19 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start
+        }
+
+        .inv-tpl-19 .t-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #065F46
+        }
+
+        .inv-tpl-19 .t-tagline {
+            font-size: 11px;
+            color: #10B981;
+            margin-top: 1px
+        }
+
+        .inv-tpl-19 .t-from {
+            font-size: 11px;
+            color: #3D6B55;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-19 .t-inv-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #065F46;
+            text-align: right
+        }
+
+        .inv-tpl-19 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-19 .t-meta-key {
+            color: #10B981
+        }
+
+        .inv-tpl-19 .t-meta-val {
+            color: #022C22;
+            font-weight: 600
+        }
+
+        .inv-tpl-19 .t-bill {
+            background: #D1FAE5;
+            border-radius: 6px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-19 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #10B981;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-19 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #065F46
+        }
+
+        .inv-tpl-19 .t-bill-detail {
+            font-size: 11px;
+            color: #3D6B55;
+            line-height: 1.7
+        }
+
+        .inv-tpl-19 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #065F46;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-19 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85)
+        }
+
+        .inv-tpl-19 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-19 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #A7F3D0;
+            align-items: center
+        }
+
+        .inv-tpl-19 .t-row:nth-child(even) {
+            background: #ECFDF5
+        }
+
+        .inv-tpl-19 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #3D6B55
+        }
+
+        .inv-tpl-19 .t-row .t-row-total {
+            font-weight: 600;
+            color: #022C22
+        }
+
+        .inv-tpl-19 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-19 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-19 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-19 .t-trow .tk {
+            color: #10B981
+        }
+
+        .inv-tpl-19 .t-trow .tv {
+            font-weight: 600;
+            color: #022C22
+        }
+
+        .inv-tpl-19 .t-trow.grand {
+            background: #065F46;
+            border-radius: 4px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-19 .t-trow.grand .tk,
+        .inv-tpl-19 .t-trow.grand .tv {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-19 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #A7F3D0;
+            font-size: 11px;
+            color: #3D6B55
+        }
+
+        .inv-tpl-19 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #10B981;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-19 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block
+        }
+
+        .inv-tpl-19 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #A7F3D0;
+            display: none
+        }
+
+        .inv-tpl-19 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px
+        }
+
+        .inv-tpl-19 .t-sig-label {
+            font-size: 9px;
+            color: #10B981;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        /* T20: Gold Luxury */
+        .inv-tpl-20 {
+            background: #0A0800;
+            color: #E8D98A
+        }
+
+        .inv-tpl-20 .t-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            margin-bottom: 36px;
+            align-items: start;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #3A2E00
+        }
+
+        .inv-tpl-20 .t-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 26px;
+            color: #F5D44A;
+            letter-spacing: -0.3px
+        }
+
+        .inv-tpl-20 .t-tagline {
+            font-size: 11px;
+            color: #8A7210;
+            margin-top: 1px;
+            font-style: italic
+        }
+
+        .inv-tpl-20 .t-from {
+            font-size: 11px;
+            color: #8A7830;
+            line-height: 1.8;
+            margin-top: 8px
+        }
+
+        .inv-tpl-20 .t-inv-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 32px;
+            color: #F5D44A;
+            text-align: right
+        }
+
+        .inv-tpl-20 .t-meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            font-size: 11px;
+            margin-top: 4px
+        }
+
+        .inv-tpl-20 .t-meta-key {
+            color: #8A7210
+        }
+
+        .inv-tpl-20 .t-meta-val {
+            color: #F5D44A;
+            font-weight: 500
+        }
+
+        .inv-tpl-20 .t-bill {
+            background: #141000;
+            border: 1px solid #3A2E00;
+            border-radius: 6px;
+            padding: 13px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        .inv-tpl-20 .t-bill-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #8A7210;
+            margin-bottom: 3px
+        }
+
+        .inv-tpl-20 .t-bill-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #F5D44A
+        }
+
+        .inv-tpl-20 .t-bill-detail {
+            font-size: 11px;
+            color: #8A7830;
+            line-height: 1.7
+        }
+
+        .inv-tpl-20 .t-items-head {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 7px 10px;
+            background: #3A2E00;
+            border-radius: 4px 4px 0 0
+        }
+
+        .inv-tpl-20 .t-items-head span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #8A7210
+        }
+
+        .inv-tpl-20 .t-items-head span:not(:first-child) {
+            text-align: right
+        }
+
+        .inv-tpl-20 .t-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 64px 70px 70px 60px;
+            gap: 6px;
+            padding: 9px 10px;
+            border-bottom: 1px solid #1E1800;
+            align-items: center
+        }
+
+        .inv-tpl-20 .t-row:nth-child(even) {
+            background: #141000
+        }
+
+        .inv-tpl-20 .t-row span:not(:first-child) {
+            text-align: right;
+            font-size: 11px;
+            color: #8A7830
+        }
+
+        .inv-tpl-20 .t-row .t-row-total {
+            font-weight: 600;
+            color: #F5D44A
+        }
+
+        .inv-tpl-20 .t-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin: 18px 0 28px
+        }
+
+        .inv-tpl-20 .t-tbox {
+            width: 230px
+        }
+
+        .inv-tpl-20 .t-trow {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+        .inv-tpl-20 .t-trow .tk {
+            color: #8A7210
+        }
+
+        .inv-tpl-20 .t-trow .tv {
+            font-weight: 500;
+            color: #E8D98A
+        }
+
+        .inv-tpl-20 .t-trow.grand {
+            background: linear-gradient(90deg, #3A2E00, #5A4800);
+            border-radius: 4px;
+            margin-top: 4px;
+            border: 1px solid #8A7210
+        }
+
+        .inv-tpl-20 .t-trow.grand .tk,
+        .inv-tpl-20 .t-trow.grand .tv {
+            color: #F5D44A;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .inv-tpl-20 .t-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #3A2E00;
+            font-size: 11px;
+            color: #8A7830
+        }
+
+        .inv-tpl-20 .t-footer-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #8A7210;
+            margin-bottom: 4px
+        }
+
+        .inv-tpl-20 .t-logo {
+            max-height: 48px;
+            max-width: 120px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+            filter: sepia(1) saturate(5) hue-rotate(10deg) brightness(1.2)
+        }
+
+        .inv-tpl-20 .t-sig-wrap {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #3A2E00;
+            display: none
+        }
+
+        .inv-tpl-20 .t-sig-wrap img {
+            max-height: 52px;
+            max-width: 150px;
+            filter: sepia(1) saturate(5) hue-rotate(10deg)
+        }
+
+        .inv-tpl-20 .t-sig-label {
+            font-size: 9px;
+            color: #8A7210;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 3px
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 0
+            }
+
+            body {
+                background: #fff
+            }
+
+            .app-header,
+            .panel,
+            .preview-area {
+                display: none !important
+            }
+
+            .invoice-sheet {
+                box-shadow: none !important;
+                width: 100% !important;
+                position: static !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-logo" style="display: flex; position: relative; overflow: hidden; ">
+        <img src="../img/LOGO.png"" alt="father" class="anim-fade-left"
+            style="width: 50%; height: 50%; object-fit: fill; background-position: center;">
+
+        <!-- Right Image (Car) - Slides in from the right -->
+        <img src="../img/Car.png" alt="car" class="anim-fade-right" style="width: 50%;">
+
+        <!-- Khmer Text - Pops up gracefully with a text-shadow effect -->
+        <h1 class="anim-text-pop"
+            style="font-family: Angkor; position: absolute; left: 30%; bottom: 40%; letter-spacing: 5px; color: #062d96; line-height: 1.4; margin: 0;">
+            ឧបករណ៍ធ្វើ<br> វិក័យបត្រ
+        </h1>
+    </div>
+    <header class="app-header">
+        <div class="header-right">
+            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-ghost" onclick="newInvoice()">＋
+                បង្កើតថ្មី</button>
+            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-ghost" onclick="openShareModal()">🔗
+                ចែករំលែក</button>
+            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-accent" onclick="downloadPNG()">🖼
+                រូបភាព PNG</button>
+            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-sage" onclick="downloadPDF()">⬇
+                ឯកសារ PDF</button>
+            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-primary" onclick="window.print()">🖨
+                បោះពុម្ព</button>
+        </div>
+    </header>
+
+    <div class="app-body" style="display:flex;flex-direction:column;gap:10px;justify-content:space-between">
+        <aside class="panel">
+            <div class="panel-tabs" style="position: sticky;top: 0;z-index:500;background-color: #062d96;">
+                <button class="tab-btn active" onclick="switchTab('info')">ព័ត៌មាន</button>
+                <button class="tab-btn" onclick="switchTab('items')">ឡានទំនិញ</button>
+                <button class="tab-btn" onclick="switchTab('design')">ការរចនា</button>
+                <button class="tab-btn" onclick="switchTab('history')">ប្រវត្តិ</button>
+            </div>
+
+            <!-- INFO -->
+            <div class="tab-content active" id="tab-info" style="height: 100%;">
+                <div class="section-label" style="color:white;font-size:15px;font-style:oblique;">វិក័យបត្រររបស់អ្នក
+                </div>
+                <div class="field"><label style="font-size:13px">ឈ្មោះ / វិក័យបត្រ</label><input id="fromName"
+                        placeholder="សាយ សុភី..." oninput="update()"></div>
+                <div class="field"><label style="font-size:13px">ស្លាកប្រយោជន៍</label><input id="fromTagline"
+                        placeholder="ការរចនា & សេវាកម្មច្នៃប្រឌិត..." oninput="update()"></div>
+                <div class="field"><label style="font-size:13px">អាសយដ្ឋាន / ទំនាក់ទំនង</label><textarea
+                        id="fromAddress" placeholder="ភូមិប្រទេន, ឃុំ​ត្រពាំងគរ, ស្រុកជើងព្រៃ, ខេត្តកំពង់ចាម..."
+                        oninput="update()"></textarea></div>
+                <div class="section-label" style="font-size:15px;color:white">អតិថិជន</div>
+                <div class="field"><label style="font-size:13px">ឈ្មោះអតិថិជន</label><input id="toName"
+                        placeholder="បញ្ចូលឈ្មោះអតិថិជន..." oninput="update()"></div>
+                <div class="field"><label style="font-size:13px">អ៊ីមែលអតិថិជន</label><input id="toEmail" type="email"
+                        placeholder="client@acme.com..." oninput="update()"></div>
+                <div class="field"><label style="font-size:13px">អាសយដ្ឋានអតិថិជន</label><textarea id="toAddress"
+                        placeholder="ភូមិ.../ឃុំ.../ស្រុក.../ខេត្ត..." oninput="update()"></textarea></div>
+                <div class="section-label" style="font-size:15px;color:white">ព័ត៌មានវិក្កយបត្រ</div>
+                <div class="field-row">
+                    <div class="field"><label style="font-size:13px">លេខវិក្កយបត្រ</label><input id="invoiceNum"
+                            placeholder="វិ-001" oninput="update()"></div>
+                    <div class="field"><label style="font-size:13px">រូបិយប័ណ្ណ</label>
+                        <select id="currency" onchange="update()">
+                            <option value="$">USD ($)</option>
+                            <option value="€">EUR (€)</option>
+                            <option value="£">GBP (£)</option>
+                            <option value="¥">JPY (¥)</option>
+                            <option value="KHR ">KHR (៛)</option>
+                            <option value="SGD ">SGD</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field"><label style="font-size:13px">ថ្ងៃចេញវិក្កយបត្រ</label><input id="issueDate"
+                            type="date" oninput="update()"></div>
+                    <div class="field"><label style="font-size:13px">ថ្ងៃផុតកំណត់</label><input id="dueDate" type="date"
+                            oninput="update()"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field"><label style="font-size:13px">អាករពន្ធ (%)</label><input id="taxRate"
+                            type="number" placeholder="0" min="0" step="0.1" oninput="update()"></div>
+                    <div class="field"><label style="font-size:13px">បញ្ចុះតម្លៃ (%)</label><input id="discountRate"
+                            type="number" placeholder="0" min="0" step="0.1" oninput="update()"></div>
+                </div>
+                <div class="section-label"
+                    style="color:white;font-size:15px;font-style:oblique;border-bottom:2px solid red;">ចំណាំ</div>
+                <div class="field"><textarea id="notes" placeholder="សូមអរគុណចំពោះការសហការដឹកទំនិញ!"
+                        oninput="update()"></textarea></div>
+                <div class="section-label" style="font-size:13px;">ព័ត៌មានការបង់ប្រាក់</div>
+                <div class="field"><textarea id="paymentInfo" placeholder="ធនាគារ: ABA&#10;គណនី: 000-123-456"
+                        oninput="update()"></textarea></div>
+                <div class="section-label" style="font-size:13px;">ហត្ថលេខា</div>
+                <canvas id="sigCanvas" width="310" height="80"></canvas>
+                <div class="sig-actions">
+                    <button class="btn btn-ghost" style="color:blue;font-size:13px;padding:7px 10px"
+                        onclick="clearSig()">លុបចោល</button>
+                    <button class="btn btn-ghost" style="color:blue;font-size:13px;padding:7px 10px"
+                        onclick="saveSig()">ប្រើហត្ថលេខា</button>
+                </div>
+                <div style="height: 200px;">
+
+                </div>
+            </div>
+
+            <!-- ITEMS -->
+            <div class="tab-content" id="tab-items">
+                <div class="section-label">ឡានជួលដឹកទំនិញ (ស្លាកលេខ / ថ្ងៃខែ / ចេញពី / ទៅ / ប្រភេទទំនិញ / តម្លៃ)</div>
+                <div id="itemsList"></div>
+                <div style="padding-bottom:300px">
+                    <button class="btn-add-item" onclick="addItem()" style="padding:50px ">+ បន្ថែមឡាន</button>
+                </div>
+
+            </div>
+
+            <!-- DESIGN -->
+            <div class="tab-content" id="tab-design">
+                <div class="section-label">ស្លាកសញ្ញា — ជ្រើសរចនាប័ទ្ម</div>
+                <div class="tpl-grid" id="tplGrid"></div>
+                <div class="section-label" style="margin-top:20px;">រូបសញ្ញា</div>
+                <div class="logo-upload-area">
+                    <img id="logoPreviewPanel" class="logo-preview" style="display:none" />
+                    <div id="logoHint" class="logo-hint">📁 ចុចដើម្បីផ្ទុករូបសញ្ញា<br /><span
+                            style="font-size:10px;color:#3d5a6e">PNG, JPG — អតិបរមា 2MB</span></div>
+                    <input type="file" id="logoInput" accept="image/*" onchange="handleLogo(this)" />
+                </div>
+                <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;margin-top:6px;width:100%"
+                    onclick="removeLogo()">លុបរូបសញ្ញា</button>
+                <div class="section-label" style="margin-top:18px">QR Code</div>
+                <div class="field"><label>មាតិកា QR (តំណផ្នែកបង់ប្រាក់)</label><input id="qrContent"
+                        placeholder="https://pay.example.com/invoice" oninput="updateQR()" /></div>
+                <div class="section-label" style="margin-top:18px">ការចាប់លេខវិក្កយបត្របន្ទាន់</div>
+                <div class="field"><label>លេខវិក្កយបត្របន្ទាប់</label><input id="nextInvNum" placeholder="INV-002"
+                        oninput="saveSettings()" /></div>
+                <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;width:100%;margin-top:4px"
+                    onclick="applyNextNum()">អនុវត្តទៅលើបច្ចុប្បន្ន</button>
+                <div style="height: 200px;"></div>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="tab-content" id="tab-history">
+                <div class="section-label">វិក្កយបត្រដែលបានរក្សាទុក</div>
+                <div id="historyList">
+                    <p style="color:#5C7A9A;font-size:12px;padding:8px 0">មិនមានវិក្កយបត្រដែលបានរក្សាទុកទេ។</p>
+                </div>
+                <button class="btn btn-ghost" style="width:100%;margin-top:10px;font-size:12px"
+                    onclick="saveCurrentInvoice()">💾 រក្សាទុកវិក្កយបត្រ​បច្ចុប្បន្ន</button>
+            </div>
+        </aside>
+
+        <main class="preview-area">
+            <div class="invoice-sheet" id="invoiceSheet">
+                <div id="invBody"></div>
+                <div class="inv-qr" id="inv-qr-wrap" style="display:none">
+                    <div id="inv-qr-canvas"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal">
+            <h3>ចែករំលែកវិក្កយបត្រ</h3>
+            <button class="share-btn" onclick="sendTelegram()">
+                <div class="share-icon" style="background:#0088cc">✈️</div>
+                <div>
+                    <div style="font-weight:600">Telegram</div>
+                    <div style="font-size:11px;color:#7A90A8">ផ្ញើទៅឱ្យ bot របស់អ្នក</div>
+                </div>
+            </button>
+            <button class="share-btn" onclick="shareEmail()">
+                <div class="share-icon" style="background:#D44638">📧</div>
+                <div>
+                    <div style="font-weight:600">អ៊ីមែល</div>
+                    <div style="font-size:11px;color:#7A90A8">បើកកម្មវិធីអ៊ីមែល</div>
+                </div>
+            </button>
+            <button class="share-btn" onclick="copyLink()">
+                <div class="share-icon" style="background:#4A7C59">🔗</div>
+                <div>
+                    <div style="font-weight:600">ចម្លងតំណភ្ជាប់</div>
+                    <div style="font-size:11px;color:#7A90A8">តំណវិក្កយបត្រដែលបាន encode</div>
+                </div>
+            </button>
+            <button class="share-btn" onclick="downloadPDF();closeModal()">
+                <div class="share-icon" style="background:#1B3A6B">⬇️</div>
+                <div>
+                    <div style="font-weight:600">ទាញយក PDF</div>
+                </div>
+            </button>
+            <button class="share-btn" onclick="downloadPNG();closeModal()">
+                <div class="share-icon" style="background:#6B4E9A">🖼️</div>
+                <div>
+                    <div style="font-weight:600">ទាញយក PNG</div>
+                </div>
+            </button>
+            <div id="tgSection" style="margin-top:10px;display:none">
+                <div class="field"><label style="color:#7A90A8">Token Bot</label><input id="tgToken"
+                        placeholder="123456:ABC-DEF..." style="color:#E0E8F0" oninput="saveTgCreds()" /></div>
+                <div class="field"><label style="color:#7A90A8">Chat ID</label><input id="tgChatId"
+                        placeholder="-100123456789" style="color:#E0E8F0" oninput="saveTgCreds()" /></div>
+                <button class="btn btn-accent" onclick="doSendTelegram()">ផ្ញើឥឡូវនេះ</button>
+            </div>
+            <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">បិទ</button></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const TEMPLATES = [
+            { id: 1, name: 'Classic Navy', bg: '#1B3A6B', fg: '#fff', accent: '#4A7C59' },
+            { id: 2, name: 'Minimal White', bg: '#111', fg: '#fff', accent: '#eee' },
+            { id: 3, name: 'Dark Executive', bg: '#0F1923', fg: '#6BAED6', accent: '#1A2738' },
+            { id: 4, name: 'Rose Gold', bg: '#8B5E3C', fg: '#fff', accent: '#E8C4A2' },
+            { id: 5, name: 'Emerald', bg: '#1A6B45', fg: '#fff', accent: '#4A9A6F' },
+            { id: 6, name: 'Slate Modern', bg: '#2B3A4A', fg: '#fff', accent: '#8AAAC0' },
+            { id: 7, name: 'Purple Creative', bg: '#6B35A8', fg: '#fff', accent: '#A855F7' },
+            { id: 8, name: 'Crimson', bg: '#7F1D1D', fg: '#fff', accent: '#B91C1C' },
+            { id: 9, name: 'Ocean Blue', bg: '#1D4ED8', fg: '#fff', accent: '#0EA5E9' },
+            { id: 10, name: 'Newspaper', bg: '#111', fg: '#fff', accent: '#888' },
+            { id: 11, name: 'Amber Warm', bg: '#92400E', fg: '#fff', accent: '#F59E0B' },
+            { id: 12, name: 'Teal Fresh', bg: '#0D9488', fg: '#fff', accent: '#06B6D4' },
+            { id: 13, name: 'Midnight Violet', bg: '#4C1D95', fg: '#C084FC', accent: '#1A0A2E' },
+            { id: 14, name: 'Coral Pink', bg: '#BE123C', fg: '#fff', accent: '#FB7185' },
+            { id: 15, name: 'Forest Sage', bg: '#2D4A22', fg: '#fff', accent: '#6B9A5A' },
+            { id: 16, name: 'Sky Clean', bg: '#0369A1', fg: '#fff', accent: '#38BDF8' },
+            { id: 17, name: 'Carbon Dark', bg: '#111', fg: '#fff', accent: '#333' },
+            { id: 18, name: 'Terracotta', bg: '#8B2500', fg: '#fff', accent: '#C1440E' },
+            { id: 19, name: 'Mint & Charcoal', bg: '#065F46', fg: '#fff', accent: '#10B981' },
+            { id: 20, name: 'Gold Luxury', bg: '#3A2E00', fg: '#F5D44A', accent: '#0A0800' },
+        ];
+
+        // ── Product types list (Khmer + English) ──
+        const PRODUCT_TYPES = [
+            { value: '', label: '— ជ្រើសប្រភេទទំនិញ —' },
+            { value: 'អង្ករ', label: 'អង្ករ (Rice)' },
+            { value: 'ស្ករ', label: 'ស្ករ (Sugar)' },
+            { value: 'ប្រេង', label: 'ប្រេង (Oil/Fuel)' },
+            { value: 'ស៊ីម៉ងត៍', label: 'ស៊ីម៉ងត៍ (Cement)' },
+            { value: 'ថ្មបំបែក', label: 'ថ្មបំបែក (Gravel/Stone)' },
+            { value: 'ខ្សាច់', label: 'ខ្សាច់ (Sand)' },
+            { value: 'ដែក', label: 'ដែក (Steel/Iron)' },
+            { value: 'ឈើ', label: 'ឈើ (Wood/Lumber)' },
+            { value: 'ម្រេច', label: 'ម្រេច (Pepper)' },
+            { value: 'កៅស៊ូ', label: 'កៅស៊ូ (Rubber)' },
+            { value: 'ដំណំ', label: 'ដំណំ (Cassava)' },
+            { value: 'ពោត', label: 'ពោត (Corn)' },
+            { value: 'ត្រី', label: 'ត្រី (Fish)' },
+            { value: 'សត្វ', label: 'សត្វ (Livestock)' },
+            { value: 'ម៉ាស៊ីន', label: 'ម៉ាស៊ីន (Machinery)' },
+            { value: 'គ្រឿងដែក', label: 'គ្រឿងដែក (Hardware)' },
+            { value: 'ទំនិញទូទៅ', label: 'ទំនិញទូទៅ (General Goods)' },
+            { value: 'custom', label: '✏️ បញ្ចូលផ្ទាល់ (Custom)...' },
+        ];
+
+        const KHMER_MONTHS = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
+
+        let currentTpl = 1;
+        let items = [];
+        let nextId = 1;
+        let sigData = null;
+        let logoData = null;
+
+        function buildTplGrid() {
+            const grid = document.getElementById('tplGrid');
+            grid.innerHTML = '';
+            TEMPLATES.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'tpl-card' + (t.id === currentTpl ? ' selected' : '');
+                card.id = 'tpl-card-' + t.id;
+                card.onclick = () => selectTemplate(t.id);
+                card.innerHTML = `
+  <svg class="tpl-thumb" viewBox="0 0 130 80" xmlns="http://www.w3.org/2000/svg">
+    <rect width="130" height="80" fill="${t.accent}"/>
+    <rect x="0" y="0" width="130" height="26" fill="${t.bg}"/>
+    <rect x="8" y="7" width="50" height="4" rx="1" fill="${t.fg}" opacity="0.9"/>
+    <rect x="8" y="14" width="30" height="2" rx="1" fill="${t.fg}" opacity="0.45"/>
+    <rect x="90" y="6" width="30" height="6" rx="1" fill="${t.fg}" opacity="0.7"/>
+    <rect x="95" y="15" width="20" height="2" rx="1" fill="${t.fg}" opacity="0.4"/>
+    <rect x="8" y="30" width="114" height="10" rx="1" fill="${t.bg}" opacity="0.15"/>
+    <rect x="8" y="43" width="114" height="2" rx="0.5" fill="${t.bg}" opacity="0.15"/>
+    <rect x="8" y="48" width="114" height="2" rx="0.5" fill="${t.bg}" opacity="0.1"/>
+    <rect x="8" y="53" width="114" height="2" rx="0.5" fill="${t.bg}" opacity="0.08"/>
+    <rect x="78" y="60" width="44" height="12" rx="1.5" fill="${t.bg}" opacity="0.8"/>
+    <rect x="82" y="64" width="28" height="4" rx="1" fill="${t.fg}" opacity="0.7"/>
+  </svg>
+  <div class="tpl-check">✓</div>
+  <div class="tpl-name">${t.name}</div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectTemplate(id) {
+            currentTpl = id;
+            document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('selected'));
+            const card = document.getElementById('tpl-card-' + id);
+            if (card) card.classList.add('selected');
+            renderInvoice();
+            autoSave();
+        }
+
+        function fmt(n) {
+            const sym = document.getElementById('currency').value;
+            if (!isFinite(n)) n = 0;
+            return sym + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function fmtDate(v) {
+            if (!v) return '—';
+            const d = new Date(v + 'T00:00:00');
+            if (isNaN(d.getTime())) return v;
+            const day = d.getDate();
+            const month = KHMER_MONTHS[d.getMonth()];
+            const year = d.getFullYear();
+            return `ថ្ងៃទី ${day} ខែ${month} ឆ្នាំ ${year}`;
+        }
+
+        function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function nl2br(s) { return esc(s).replace(/\n/g, '<br>'); }
+        function g(id) { return document.getElementById(id); }
+        function v(id) { const el = g(id); return el ? el.value || '' : ''; }
+        function calcTotal() {
+            let sub = items.reduce((a, i) => a + (parseFloat(i.amount) || 0), 0);
+            const disc = parseFloat(v('discountRate')) || 0;
+            const tax = parseFloat(v('taxRate')) || 0;
+            const taxable = sub - sub * (disc / 100);
+            return taxable + taxable * (tax / 100);
+        }
+
+        // ── Items ──
+        function addItem() {
+            items.push({ id: nextId++, name: '', date: '', from: '', to: '', productType: '', customProductType: '', amount: 0, ready: false });
+            renderItems();
+            update();
+        }
+        function removeItem(id) { items = items.filter(i => i.id !== id); renderItems(); update(); }
+        function toggleReady(id, checked) {
+            const it = items.find(i => i.id === id);
+            if (it) it.ready = checked;
+            renderItems(); update();
+        }
+
+        // Handle product type select change - show/hide custom input
+        function onProductTypeChange(idx, selectEl) {
+            items[idx].productType = selectEl.value;
+            if (selectEl.value !== 'custom') {
+                items[idx].customProductType = '';
+            }
+            renderItems();
+            update();
+        }
+
+        function renderItems() {
+            const list = g('itemsList'); list.innerHTML = '';
+            items.forEach((item, idx) => {
+                const d = document.createElement('div');
+                d.className = 'item-card';
+
+                // Build product type options
+                const optionsHTML = PRODUCT_TYPES.map(pt =>
+                    `<option value="${esc(pt.value)}" ${item.productType === pt.value ? 'selected' : ''}>${esc(pt.label)}</option>`
+                ).join('');
+
+                const customInputHTML = item.productType === 'custom'
+                    ? `<div class="item-row1" style="margin-top:4px">
+                <input type="text" placeholder="បញ្ចូលប្រភេទទំនិញផ្ទាល់ខ្លួន..." value="${esc(item.customProductType)}"
+                  oninput="items[${idx}].customProductType=this.value;update()">
+               </div>`
+                    : '';
+
+                d.innerHTML = `
+      <div class="item-card-head" style="margin-bottom:10px">
+        <input style="padding:10px" type="text" placeholder="បញ្ចូលស្លាកលេខឡាន..." value="${esc(item.name)}"
+          oninput="items[${idx}].name=this.value;update()">
+        <button class="btn-danger-sm" onclick="removeItem(${item.id})">✕</button>
+      </div>
+      <div class="item-row3">
+        <input type="date" value="${esc(item.date)}" title="ថ្ងៃខែ (Date)"
+          oninput="items[${idx}].date=this.value;update()">
+      </div>
+      <div class="item-row3">
+        <input type="text" placeholder="ចេញពី (From)" value="${esc(item.from)}"
+          oninput="items[${idx}].from=this.value;update()">
+        <input type="text" placeholder="ទៅ (To)" value="${esc(item.to)}"
+          oninput="items[${idx}].to=this.value;update()">
+      </div>
+      <div class="item-product-label">ប្រភេទទំនិញ (Product Type)</div>
+      <div class="item-row1">
+        <select onchange="onProductTypeChange(${idx}, this)">${optionsHTML}</select>
+      </div>
+      ${customInputHTML}
+      <div class="item-amount-row" style="width:50%;margin-top:6px">
+        <input style="padding-right:50%" type="number" placeholder="តម្លៃដឹកទំនិញ" value="${item.amount}" min="0" step="0.01"
+          oninput="items[${idx}].amount=parseFloat(this.value)||0;update()">
+      </div>
+      <div class="item-ready-row">
+        <label>
+          <input type="checkbox" ${item.ready ? 'checked' : ''} onchange="toggleReady(${item.id},this.checked)">
+          បានដឹកទំនិញរួចរាល់ / Ready
+        </label>
+        <span class="item-ready-tag ${item.ready ? 'ready' : 'notready'}">${item.ready ? 'ដឹកទំនិញរួចរាល់ / Ready' : 'កំពុងដឹកទំនិញ / Not Ready'}</span>
+      </div>`;
+                list.appendChild(d);
+            });
+        }
+
+        // Get display product type for invoice rendering
+        function getProductTypeDisplay(item) {
+            if (!item.productType) return '';
+            if (item.productType === 'custom') return item.customProductType || '';
+            return item.productType;
+        }
+
+        function buildInvoiceHTML() {
+            const t = currentTpl;
+            const cl = `inv-tpl-${t}`;
+            const fromName = v('fromName') || 'ព័ត៍មានរបស់អ្នក';
+            const tagline = v('fromTagline');
+            const fromAddr = nl2br(v('fromAddress'));
+            const toName = v('toName') || 'ឈ្មោះអតិថិជន';
+            const toDetail = nl2br([v('toEmail'), v('toAddress')].filter(Boolean).join('\n'));
+            const invNum = v('invoiceNum') || 'INV-001';
+            const issueDate = fmtDate(v('issueDate'));
+            const dueDate = fmtDate(v('dueDate'));
+            const notesText = nl2br(v('notes')) || 'អគុណសម្រាប់ការសហការ!';
+            const payText = nl2br(v('paymentInfo'));
+            const logoHTML = logoData ? `<img src="${logoData}" class="t-logo">` : '';
+
+            let sub = 0;
+            // let rowsHTML = '';
+            // items.forEach(item => {
+            //     const amt = parseFloat(item.amount) || 0;
+            //     sub += amt;
+            //     const statusHTML = `<span style="text-align:center;position:relative;width:50px" class="t-status ${item.ready?'ready':'notready'}">${item.ready?'ដឹកបានជោគជ័យ':'កំពុងដឹកទំនិញ'}</span>`;
+            //     const prodType = getProductTypeDisplay(item);
+            //     const productBadge = prodType
+            //         ? `<span class="t-product-badge" title="ប្រភេទទំនិញ">${esc(prodType)}</span>`
+            //         : '<span style="font-size:10px;color:#aaa">—</span>';
+            //     rowsHTML += `<div class="t-row" style="border:1px solid gray;">
+            //   <span>${statusHTML}</span>
+            //   <div style="text-align:center;margin-left:60px;border-left:1px solid gray">${esc(item.name)||'<em style="opacity:.5">ស្លាកលេខ</em>'}</div>
+            //   <span style="border-left:1px solid gray;text-align:center">${productBadge}</span>
+            //   <span style="border-left:1px solid gray;text-align:center;height:50%">${item.date?fmtDate(item.date):'—'}</span>
+            //   <span style="border-left:1px solid gray;text-align:center">${esc(item.from)||'—'}</span>
+            //   <span style="border-left:1px solid gray;text-align:center">${esc(item.to)||'—'}</span>
+            //   <span class="t-row-total" style="border-left:1px solid gray;text-align:center">${fmt(amt)}</span>
+            // </div>`;
+            // });
+
+            let rowsHTML = '';
+            items.forEach(item => {
+                const amt = parseFloat(item.amount) || 0;
+                const prodType = getProductTypeDisplay(item);
+                const productBadge = prodType
+                    ? `<span class="t-product-badge">${esc(prodType)}</span>`
+                    : '—';
+
+                const statusHTML = `<span class="t-status ${item.ready ? 'ready' : 'notready'}">
+        ${item.ready ? '✓' : '✕'}
+    </span>`;
+
+                rowsHTML += `
+    <div class="t-row" style="border:1px solid gray">
+        <span style="text-align:center">${statusHTML}</span>
+        <span style="text-align:center">${esc(item.name) || '—'}</span>
+        <span style="text-align:center">${productBadge}</span>
+        <span style="text-align:center">${item.date ? fmtDate(item.date) : '—'}</span>
+        <span style="text-align:center">${esc(item.from) || '—'}</span>
+        <span style="text-align:center">${esc(item.to) || '—'}</span>
+        <span class="t-row-total" style="text-align:right">${fmt(amt)}</span>
+    </div>`;
+            });
+
+
+
+
+            const disc = parseFloat(v('discountRate')) || 0;
+            const tax = parseFloat(v('taxRate')) || 0;
+            const discAmt = sub * (disc / 100);
+            const taxable = sub - discAmt;
+            const taxAmt = taxable * (tax / 100);
+            const total = taxable + taxAmt;
+
+            const discRow = disc > 0 ? `<div class="t-trow"><span class="tk">Discount</span><span class="tv">-${fmt(discAmt)}</span></div>` : '';
+            const taxRow = tax > 0 ? `<div class="t-trow"><span class="tk">Tax (${tax}%)</span><span class="tv">${fmt(taxAmt)}</span></div>` : '';
+
+            const sigHTML = sigData
+                ? `<div class="t-sig-wrap" style="display:block"><h4 class="t-sig-label" style="font-size:10px;font-weight:bold">ហត្ថលេខា</h4><img src="${sigData}"><div class="t-sig-label" style="margin-left:30px">សាយ សុភី</div></div>`
+                : `<div class="t-sig-wrap"></div>`;
+
+            if (t === 10) {
+                return `<div class="${cl}">
+      ${logoHTML}
+      <div class="t-head">
+        <div class="t-brand">${esc(fromName)}</div>
+        <div class="t-tagline">${esc(tagline)}</div>
+        <div class="t-from">${fromAddr}</div>
+      </div>
+      <div class="t-inv-title">INVOICE</div>
+      <div class="t-meta-area">
+        <span><span class="t-meta-key">Invoice # </span>${esc(invNum)}</span>
+        <span><span class="t-meta-key">Issue: </span>${issueDate}</span>
+        <span><span class="t-meta-key">Due: </span>${dueDate}</span>
+      </div>
+      <div class="t-bill">
+        <div><div class="t-bill-label">Bill To</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
+        <div><div class="t-bill-label">Amount Due</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
+      </div>
+      <div class="t-items-head"><span style="text-align:center;">ស្ថានភាព</span><span>ស្លាកលេខឡាន</span><span style="text-align:right">ប្រភេទ</span><span style="text-align:right">ថ្ងៃខែ</span><span style="text-align:right">ចេញពី</span><span style="text-align:right">ទៅ</span><span style="text-align:right">តម្លៃ</span></div>
+      ${rowsHTML}
+      <div class="t-totals"><div class="t-tbox">
+        <div class="t-trow"><span class="tk">Subtotal</span><span class="tv">${fmt(sub)}</span></div>
+        ${discRow}${taxRow}
+        <div class="t-trow grand"><span class="tk">Total Due</span><span class="tv">${fmt(total)}</span></div>
+      </div></div>
+      <div class="t-footer">
+        <div><div class="t-footer-label">Notes</div><div style="font-size:11px;color:#555">${notesText}</div></div>
+        <div><div class="t-footer-label">Payment</div><div style="font-size:11px;color:#444;line-height:1.9">${payText}</div></div>
+      </div>
+      ${sigHTML}
+    </div>`;
+            }
+
+            return `<div class="${cl}">
+    <div class="t-head">
+      <div>
+        ${logoHTML}
+        <div class="t-brand">${esc(fromName)}</div>
+        ${tagline ? `<div class="t-tagline">${esc(tagline)}</div>` : ''}
+        <div class="t-from">${fromAddr}</div>
+      </div>
+      <div>
+        <div class="t-inv-title">វិក័យបត្រ</div>
+        <div class="t-meta-row"><span class="t-meta-key">លេខសម្គាល់ #</span><span class="t-meta-val">${esc(invNum)}</span></div>
+        <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេទ:</span><span class="t-meta-val">${issueDate}</span></div>
+        <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេតផុតកំណត់:</span><span class="t-meta-val">${dueDate}</span></div>
+      </div>
+    </div>
+    <div class="t-bill">
+      <div><div class="t-bill-label">ផ្ញើទៅកាន់</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
+      <div><div class="t-bill-label">កាលបរិច្ឆេទ</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
+    </div>
+        <div class="t-items-head">
+            <span style="text-align:center;">ទូទាត់</span>
+            <span style="text-align:center;padding-left:10px">ស្លាកលេខឡាន</span>
+            <span style="text-align:center;padding-left:10px ">ដឹកទំនិញ</span>
+            <span style="text-align:center">ថ្ងៃខែ</span>
+            <span style="text-align:center">ចេញពី</span>
+            <span style="text-align:center">ទៅ</span>
+            <span style="text-align:right">តម្លៃ</span>
+        </div>
+    ${rowsHTML}
+    <div class="t-totals"><div class="t-tbox">
+      <div class="t-trow"><span class="tk">តម្លៃសរុប ​:</span><span class="tv">${fmt(sub)}</span></div>
+      ${discRow}${taxRow}
+      <div class="t-trow grand"><span class="tk">តម្លៃចុងក្រោយ​ : </span><span class="tv">${fmt(total)}</span></div>
+    </div></div>
+    <div class="t-footer">
+      <div><div class="t-footer-label">សម្គាល់</div><div style="font-size:11px;line-height:1.7">${notesText}</div></div>
+      <div><div class="t-footer-label">ការបង់ប្រាក់</div><div style="font-size:11px;line-height:1.9">${payText}</div></div>
+    </div>
+    ${sigHTML}
+  </div>`;
+        }
+
+        function renderInvoice() { g('invBody').innerHTML = buildInvoiceHTML(); }
+        function update() { renderInvoice(); autoSave(); }
+
+        function handleLogo(input) {
+            const file = input.files[0]; if (!file) return;
+            if (file.size > 2097152) { showToast('Image too large (max 2MB)', 'error'); return; }
+            const r = new FileReader();
+            r.onload = e => {
+                logoData = e.target.result;
+                g('logoPreviewPanel').src = logoData; g('logoPreviewPanel').style.display = 'block';
+                g('logoHint').style.display = 'none';
+                update();
+            };
+            r.readAsDataURL(file);
+        }
+        function removeLogo() {
+            logoData = null;
+            g('logoPreviewPanel').style.display = 'none'; g('logoHint').style.display = '';
+            g('logoInput').value = '';
+            update();
+        }
+
+        function updateQR() {
+            const content = v('qrContent').trim();
+            const wrap = g('inv-qr-wrap');
+            g('inv-qr-canvas').innerHTML = '';
+            if (!content) { wrap.style.display = 'none'; return; }
+            wrap.style.display = 'block';
+            try { new QRCode(g('inv-qr-canvas'), { text: content, width: 60, height: 60, colorDark: '#333', colorLight: 'transparent' }); } catch (e) { }
+            autoSave();
+        }
+
+        (function () {
+            const canvas = document.getElementById('sigCanvas');
+            const ctx = canvas.getContext('2d');
+            let drawing = false, lx = 0, ly = 0;
+            ctx.strokeStyle = '#1B3A6B'; ctx.lineWidth = 1.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            function pos(e) { const r = canvas.getBoundingClientRect(), src = e.touches ? e.touches[0] : e; return { x: (src.clientX - r.left) * (canvas.width / r.width), y: (src.clientY - r.top) * (canvas.height / r.height) }; }
+            canvas.addEventListener('mousedown', e => { drawing = true; const p = pos(e); lx = p.x; ly = p.y; });
+            canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = pos(e); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y); ctx.stroke(); lx = p.x; ly = p.y; });
+            canvas.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('mouseleave', () => drawing = false);
+            canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = pos(e); lx = p.x; ly = p.y; }, { passive: false });
+            canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = pos(e); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y); ctx.stroke(); lx = p.x; ly = p.y; }, { passive: false });
+            canvas.addEventListener('touchend', () => drawing = false);
+        })();
+        function clearSig() { const c = g('sigCanvas'); c.getContext('2d').clearRect(0, 0, c.width, c.height); }
+        function saveSig() { sigData = g('sigCanvas').toDataURL(); update(); showToast('Signature applied ✓'); }
+
+        function switchTab(name) {
+            const names = ['info', 'items', 'design', 'history'];
+            document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', names[i] === name));
+            document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', 'tab-' + names[i] === 'tab-' + name));
+            if (name === 'history') renderHistory();
+        }
+
+        async function downloadPDF() {
+            showToast('Generating PDF…');
+            try {
+                const canvas = await html2canvas(g('invoiceSheet'), { scale: 2, useCORS: true, backgroundColor: '#fff' });
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                const pw = pdf.internal.pageSize.getWidth();
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pw, pw * (canvas.height / canvas.width));
+                pdf.save((v('invoiceNum') || 'invoice') + '.pdf');
+                showToast('PDF downloaded ✓');
+                bumpInvoiceNum();
+            } catch (e) { showToast('PDF error: ' + e.message, 'error'); }
+        }
+
+        async function downloadPNG() {
+            showToast('Generating image…');
+            try {
+                const canvas = await html2canvas(g('invoiceSheet'), { scale: 2, useCORS: true, backgroundColor: '#fff' });
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = (v('invoiceNum') || 'invoice') + '.png';
+                a.click();
+                showToast('PNG downloaded ✓');
+            } catch (e) { showToast('Error: ' + e.message, 'error'); }
+        }
+
+        function bumpInvoiceNum() {
+            const cur = v('invoiceNum');
+            const match = cur.match(/^(.*?)(\d+)$/);
+            if (match) { g('nextInvNum').value = match[1] + String(parseInt(match[2]) + 1).padStart(match[2].length, '0'); saveSettings(); }
+        }
+        function applyNextNum() { const n = v('nextInvNum'); if (n) { g('invoiceNum').value = n; update(); showToast('Number updated'); } }
+
+        function openShareModal() { g('shareModal').classList.add('open'); }
+        function closeModal() { g('shareModal').classList.remove('open'); g('tgSection').style.display = 'none'; }
+        g('shareModal').addEventListener('click', e => { if (e.target === g('shareModal')) closeModal(); });
+        function sendTelegram() { g('tgSection').style.display = g('tgSection').style.display === 'none' ? 'block' : 'none'; const s = JSON.parse(localStorage.getItem('tgCreds') || '{}'); if (s.token) g('tgToken').value = s.token; if (s.chatId) g('tgChatId').value = s.chatId; }
+        function saveTgCreds() { localStorage.setItem('tgCreds', JSON.stringify({ token: v('tgToken'), chatId: v('tgChatId') })); }
+        async function doSendTelegram() {
+            const token = v('tgToken').trim(), chatId = v('tgChatId').trim();
+            if (!token || !chatId) { showToast('Enter token and chat ID', 'error'); return; }
+            showToast('Sending…');
+            try {
+                const canvas = await html2canvas(g('invoiceSheet'), { scale: 2, useCORS: true, backgroundColor: '#fff' });
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                const form = new FormData();
+                form.append('chat_id', chatId);
+                form.append('photo', blob, (v('invoiceNum') || 'invoice') + '.png');
+                form.append('caption', `Invoice ${v('invoiceNum')} | ${v('toName') || 'Client'} | ${fmt(calcTotal())}`);
+                const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: form });
+                const data = await res.json();
+                if (data.ok) { showToast('Sent to Telegram ✓'); closeModal(); }
+                else showToast('Telegram error: ' + data.description, 'error');
+            } catch (e) { showToast('Error: ' + e.message, 'error'); }
+        }
+        function shareEmail() {
+            const sub = `Invoice ${v('invoiceNum') || ''}`;
+            const body = `Hi ${v('toName') || ''},\n\nInvoice ${v('invoiceNum') || ''} for ${fmt(calcTotal())} is attached.\n\nDue: ${fmtDate(v('dueDate'))}\n\n${v('paymentInfo') || ''}\n\nThank you,\n${v('fromName') || ''}`;
+            window.location.href = `mailto:${v('toEmail')}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
+        }
+        function copyLink() {
+            const data = collectData();
+            const encoded = btoa(encodeURIComponent(JSON.stringify(data))).replace(/\+/g, '-').replace(/\//g, '_');
+            const url = window.location.href.split('?')[0] + '?inv=' + encoded;
+            navigator.clipboard.writeText(url).then(() => showToast('Link copied ✓')).catch(() => prompt('Copy link:', url));
+        }
+
+        function saveCurrentInvoice() {
+            const data = collectData(); data._id = Date.now(); data._saved = new Date().toLocaleDateString();
+            const list = JSON.parse(localStorage.getItem('invHistory') || '[]');
+            list.unshift(data); if (list.length > 20) list.pop();
+            localStorage.setItem('invHistory', JSON.stringify(list));
+            renderHistory(); showToast('Saved to history ✓');
+        }
+        function renderHistory() {
+            const list = JSON.parse(localStorage.getItem('invHistory') || '[]');
+            const wrap = g('historyList');
+            if (!list.length) { wrap.innerHTML = '<p style="color:#5C7A9A;font-size:12px;padding:8px 0">No saved invoices yet.</p>'; return; }
+            wrap.innerHTML = '';
+            list.forEach(inv => {
+                const d = document.createElement('div'); d.className = 'inv-list-item';
+                d.innerHTML = `<div class="inv-list-head">
+      <div><div class="inv-list-num">${esc(inv.invoiceNum || 'Untitled')}</div>
+      <div class="inv-list-client">${esc(inv.toName || '—')}</div></div>
+      <div><div class="inv-list-total">${inv.currency || '$'}${Number(inv._total || 0).toFixed(2)}</div>
+      <div class="inv-list-date">${inv._saved || ''}</div></div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:7px">
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="loadInvoice(${inv._id})">Load</button>
+      <button class="btn-danger-sm" onclick="deleteInvoice(${inv._id})">Delete</button>
+    </div>`;
+                wrap.appendChild(d);
+            });
+        }
+        function loadInvoice(id) {
+            const list = JSON.parse(localStorage.getItem('invHistory') || '[]');
+            const inv = list.find(i => i._id === id); if (!inv) return;
+            applyData(inv); showToast('Loaded ✓'); switchTab('info');
+        }
+        function deleteInvoice(id) {
+            let list = JSON.parse(localStorage.getItem('invHistory') || '[]');
+            list = list.filter(i => i._id !== id);
+            localStorage.setItem('invHistory', JSON.stringify(list)); renderHistory();
+        }
+
+        function collectData() {
+            return {
+                fromName: v('fromName'), fromTagline: v('fromTagline'), fromAddress: v('fromAddress'),
+                toName: v('toName'), toEmail: v('toEmail'), toAddress: v('toAddress'),
+                invoiceNum: v('invoiceNum'), currency: v('currency'),
+                issueDate: v('issueDate'), dueDate: v('dueDate'),
+                taxRate: v('taxRate'), discountRate: v('discountRate'),
+                notes: v('notes'), paymentInfo: v('paymentInfo'),
+                items, nextId, sigData, logoData,
+                qrContent: v('qrContent'), currentTpl,
+                _total: calcTotal()
+            };
+        }
+        function applyData(d) {
+            const set = (id, val) => { const el = g(id); if (el && val != null) el.value = val; };
+            set('fromName', d.fromName); set('fromTagline', d.fromTagline); set('fromAddress', d.fromAddress);
+            set('toName', d.toName); set('toEmail', d.toEmail); set('toAddress', d.toAddress);
+            set('invoiceNum', d.invoiceNum); set('currency', d.currency);
+            set('issueDate', d.issueDate); set('dueDate', d.dueDate);
+            set('taxRate', d.taxRate); set('discountRate', d.discountRate);
+            set('notes', d.notes); set('paymentInfo', d.paymentInfo);
+            set('qrContent', d.qrContent);
+            items = d.items || []; nextId = d.nextId || items.length + 1;
+            sigData = d.sigData || null; logoData = d.logoData || null;
+            if (d.currentTpl) currentTpl = d.currentTpl;
+            if (logoData) { g('logoPreviewPanel').src = logoData; g('logoPreviewPanel').style.display = 'block'; g('logoHint').style.display = 'none'; }
+            if (d.qrContent) { setTimeout(updateQR, 50); }
+            buildTplGrid(); renderItems(); update();
+        }
+        function autoSave() { localStorage.setItem('invAutosave', JSON.stringify(collectData())); }
+        function saveSettings() { localStorage.setItem('invSettings', JSON.stringify({ nextInvNum: v('nextInvNum') })); }
+
+        function newInvoice() {
+            if (!confirm('Start new invoice? Current will be saved to history.')) return;
+            saveCurrentInvoice();
+            items = []; nextId = 1; sigData = null; logoData = null;
+            ['fromName', 'fromTagline', 'fromAddress', 'toName', 'toEmail', 'toAddress',
+                'invoiceNum', 'taxRate', 'discountRate', 'notes', 'paymentInfo', 'qrContent'].forEach(id => { const el = g(id); if (el) el.value = ''; });
+            g('currency').value = '$';
+            const today = new Date().toISOString().split('T')[0];
+            g('issueDate').value = today;
+            const due = new Date(); due.setDate(due.getDate() + 14);
+            g('dueDate').value = due.toISOString().split('T')[0];
+            const nextNum = v('nextInvNum'); if (nextNum) g('invoiceNum').value = nextNum;
+            removeLogo(); g('inv-qr-wrap').style.display = 'none'; g('inv-qr-canvas').innerHTML = '';
+            renderItems(); update(); showToast('New invoice ✓');
+        }
+
+        function showToast(msg, type) {
+            const t = g('toast'); t.textContent = msg;
+            t.className = 'toast' + (type === 'error' ? ' error' : '');
+            void t.offsetWidth; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2400);
+        }
+
+        function loadFromUrl() {
+            const enc = new URLSearchParams(location.search).get('inv');
+            if (!enc) return false;
+            try { const json = decodeURIComponent(atob(enc.replace(/-/g, '+').replace(/_/g, '/'))); applyData(JSON.parse(json)); showToast('Loaded from link ✓'); return true; }
+            catch (e) { return false; }
+        }
+
+        (function () {
+            const today = new Date().toISOString().split('T')[0];
+            g('issueDate').value = today;
+            const due = new Date(); due.setDate(due.getDate() + 14);
+            g('dueDate').value = due.toISOString().split('T')[0];
+            buildTplGrid();
+            if (loadFromUrl()) return;
+            const saved = localStorage.getItem('invAutosave');
+            if (saved) { try { applyData(JSON.parse(saved)); return; } catch (e) { } }
+            const settings = JSON.parse(localStorage.getItem('invSettings') || '{}');
+            if (settings.nextInvNum) g('nextInvNum').value = settings.nextInvNum;
+            items = [{ id: nextId++, name: '2C-1234', date: today, from: 'Phnom Penh', to: 'Siem Reap', productType: 'អង្ករ', customProductType: '', amount: 120, ready: true }];
+            g('invoiceNum').value = 'INV-001';
+            renderItems(); update();
+        })();
+
+        document.querySelectorAll('input,textarea,select').forEach(el => el.addEventListener('change', autoSave));
+    </script>
+</body>
+
+</html>
