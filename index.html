@@ -21,9 +21,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Angkor&family=Bayon&family=Bokor&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Freehand&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kantumruy+Pro:wght@100..700&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Angkor&family=Bayon&family=Bokor&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Freehand&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kantumruy+Pro:wght@100..700&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
 
-   <style>
+    <style>
         /* animation */
         /* 1. Left Image Animation: Smooth slide right + fade in */
         .anim-fade-left {
@@ -5494,6 +5496,7 @@
                 position: static !important
             }
         }
+
         .t-trow.grand {
             background: #1B3A6B !important;
             color: white !important;
@@ -5506,7 +5509,7 @@
 
 <body>
     <div class="app-logo" style="display: flex; position: relative; overflow: hidden; ">
-        <img src="./img/LOGO.png"" alt="father" class="anim-fade-left"
+        <img src="./img/LOGO.png"" alt=" father" class="anim-fade-left"
             style="width: 50%; height: 50%; object-fit: fill; background-position: center;">
 
         <!-- Right Image (Car) - Slides in from the right -->
@@ -5536,10 +5539,14 @@
     <div class="app-body" style="display:flex;flex-direction:column;gap:10px;justify-content:space-between">
         <aside class="panel">
             <div class="panel-tabs" style="position: sticky;top: 0;z-index:500;background-color: #062d96;">
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn active" onclick="switchTab('info')">ព័ត៌មាន</button>
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn" onclick="switchTab('items')">ឡានទំនិញ</button>
-                <button  style="font-family:Bokor ;color:black;letter-spacing: 2px;"class="tab-btn" onclick="switchTab('design')">ការរចនា</button>
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn" onclick="switchTab('history')">ប្រវត្តិ</button>
+                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn active"
+                    onclick="switchTab('info')">ព័ត៌មាន</button>
+                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn"
+                    onclick="switchTab('items')">ឡានទំនិញ</button>
+                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn"
+                    onclick="switchTab('design')">ការរចនា</button>
+                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn"
+                    onclick="switchTab('history')">ប្រវត្តិ</button>
             </div>
 
             <!-- INFO -->
@@ -5557,7 +5564,7 @@
                 <div class="field"><label style="font-size:13px">ឈ្មោះអតិថិជន</label><input id="toName"
                         placeholder="បញ្ចូលឈ្មោះអតិថិជន..." oninput="update()"></div>
                 <div class="field"><label style="font-size:13px">អ៊ីមែលអតិថិជន</label><input id="toEmail" type="email"
-                        placeholder="បញ្ចូល អ៊ីមែ..." oninput="update()"></div>
+                        placeholder="បញ្ចូលអ៊ីមែល..." oninput="update()"></div>
                 <div class="field"><label style="font-size:13px">អាសយដ្ឋានអតិថិជន</label><textarea id="toAddress"
                         placeholder="ភូមិ.../ឃុំ.../ស្រុក.../ខេត្ត..." oninput="update()"></textarea></div>
                 <div class="section-label" style="font-size:15px;color:white">ព័ត៌មានវិក្កយបត្រ</div>
@@ -5836,12 +5843,12 @@
 
 
         function calcTotal() {
-    let sub = items.reduce((a, i) => a + (parseFloat(i.amount) || 0), 0);
-    const disc = parseFloat(v('discountRate')) || 0;
-    const tax = parseFloat(v('taxRate')) || 0;
-    const taxable = sub - (sub * disc / 100);
-    return taxable + (taxable * tax / 100);
-}
+            let sub = items.reduce((a, i) => a + (parseFloat(i.amount) || 0), 0);
+            const disc = parseFloat(v('discountRate')) || 0;
+            const tax = parseFloat(v('taxRate')) || 0;
+            const taxable = sub - (sub * disc / 100);
+            return taxable + (taxable * tax / 100);
+        }
 
         // ── Items ──
         function addItem() {
@@ -5927,187 +5934,187 @@
             return item.productType;
         }
 
-//         function buildInvoiceHTML() {
-//             const t = currentTpl;
-//             const cl = `inv-tpl-${t}`;
-//             const fromName = v('fromName') || 'ព័ត៍មានរបស់អ្នក';
-//             const tagline = v('fromTagline');
-//             const fromAddr = nl2br(v('fromAddress'));
-//             const toName = v('toName') || 'ឈ្មោះអតិថិជន';
-//             const toDetail = nl2br([v('toEmail'), v('toAddress')].filter(Boolean).join('\n'));
-//             const invNum = v('invoiceNum') || 'INV-001';
-//             const issueDate = fmtDate(v('issueDate'));
-//             const dueDate = fmtDate(v('dueDate'));
-//             const notesText = nl2br(v('notes')) || 'អគុណសម្រាប់ការសហការ!';
-//             const payText = nl2br(v('paymentInfo'));
-//             const logoHTML = logoData ? `<img src="${logoData}" class="t-logo">` : '';
+        //         function buildInvoiceHTML() {
+        //             const t = currentTpl;
+        //             const cl = `inv-tpl-${t}`;
+        //             const fromName = v('fromName') || 'ព័ត៍មានរបស់អ្នក';
+        //             const tagline = v('fromTagline');
+        //             const fromAddr = nl2br(v('fromAddress'));
+        //             const toName = v('toName') || 'ឈ្មោះអតិថិជន';
+        //             const toDetail = nl2br([v('toEmail'), v('toAddress')].filter(Boolean).join('\n'));
+        //             const invNum = v('invoiceNum') || 'INV-001';
+        //             const issueDate = fmtDate(v('issueDate'));
+        //             const dueDate = fmtDate(v('dueDate'));
+        //             const notesText = nl2br(v('notes')) || 'អគុណសម្រាប់ការសហការ!';
+        //             const payText = nl2br(v('paymentInfo'));
+        //             const logoHTML = logoData ? `<img src="${logoData}" class="t-logo">` : '';
 
-//             let sub = 0;
-//             // let rowsHTML = '';
-//             // items.forEach(item => {
-//             //     const amt = parseFloat(item.amount) || 0;
-//             //     sub += amt;
-//             //     const statusHTML = `<span style="text-align:center;position:relative;width:50px" class="t-status ${item.ready?'ready':'notready'}">${item.ready?'ដឹកបានជោគជ័យ':'កំពុងដឹកទំនិញ'}</span>`;
-//             //     const prodType = getProductTypeDisplay(item);
-//             //     const productBadge = prodType
-//             //         ? `<span class="t-product-badge" title="ប្រភេទទំនិញ">${esc(prodType)}</span>`
-//             //         : '<span style="font-size:10px;color:#aaa">—</span>';
-//             //     rowsHTML += `<div class="t-row" style="border:1px solid gray;">
-//             //   <span>${statusHTML}</span>
-//             //   <div style="text-align:center;margin-left:60px;border-left:1px solid gray">${esc(item.name)||'<em style="opacity:.5">ស្លាកលេខ</em>'}</div>
-//             //   <span style="border-left:1px solid gray;text-align:center">${productBadge}</span>
-//             //   <span style="border-left:1px solid gray;text-align:center;height:50%">${item.date?fmtDate(item.date):'—'}</span>
-//             //   <span style="border-left:1px solid gray;text-align:center">${esc(item.from)||'—'}</span>
-//             //   <span style="border-left:1px solid gray;text-align:center">${esc(item.to)||'—'}</span>
-//             //   <span class="t-row-total" style="border-left:1px solid gray;text-align:center">${fmt(amt)}</span>
-//             // </div>`;
-//             // });
+        //             let sub = 0;
+        //             // let rowsHTML = '';
+        //             // items.forEach(item => {
+        //             //     const amt = parseFloat(item.amount) || 0;
+        //             //     sub += amt;
+        //             //     const statusHTML = `<span style="text-align:center;position:relative;width:50px" class="t-status ${item.ready?'ready':'notready'}">${item.ready?'ដឹកបានជោគជ័យ':'កំពុងដឹកទំនិញ'}</span>`;
+        //             //     const prodType = getProductTypeDisplay(item);
+        //             //     const productBadge = prodType
+        //             //         ? `<span class="t-product-badge" title="ប្រភេទទំនិញ">${esc(prodType)}</span>`
+        //             //         : '<span style="font-size:10px;color:#aaa">—</span>';
+        //             //     rowsHTML += `<div class="t-row" style="border:1px solid gray;">
+        //             //   <span>${statusHTML}</span>
+        //             //   <div style="text-align:center;margin-left:60px;border-left:1px solid gray">${esc(item.name)||'<em style="opacity:.5">ស្លាកលេខ</em>'}</div>
+        //             //   <span style="border-left:1px solid gray;text-align:center">${productBadge}</span>
+        //             //   <span style="border-left:1px solid gray;text-align:center;height:50%">${item.date?fmtDate(item.date):'—'}</span>
+        //             //   <span style="border-left:1px solid gray;text-align:center">${esc(item.from)||'—'}</span>
+        //             //   <span style="border-left:1px solid gray;text-align:center">${esc(item.to)||'—'}</span>
+        //             //   <span class="t-row-total" style="border-left:1px solid gray;text-align:center">${fmt(amt)}</span>
+        //             // </div>`;
+        //             // });
 
-//             let rowsHTML = '';
-//             items.forEach(item => {
-//                 const amt = parseFloat(item.amount) || 0;
-//                 const prodType = getProductTypeDisplay(item);
-//                 const productBadge = prodType
-//                     ? `<span class="t-product-badge">${esc(prodType)}</span>`
-//                     : '—';
+        //             let rowsHTML = '';
+        //             items.forEach(item => {
+        //                 const amt = parseFloat(item.amount) || 0;
+        //                 const prodType = getProductTypeDisplay(item);
+        //                 const productBadge = prodType
+        //                     ? `<span class="t-product-badge">${esc(prodType)}</span>`
+        //                     : '—';
 
-//                 const statusHTML = `<span class="t-status ${item.ready ? 'ready' : 'notready'}">
-//         ${item.ready ? '✓' : '✕'}
-//     </span>`;
+        //                 const statusHTML = `<span class="t-status ${item.ready ? 'ready' : 'notready'}">
+        //         ${item.ready ? '✓' : '✕'}
+        //     </span>`;
 
-//                 rowsHTML += `
-//     <div class="t-row" style="border:1px solid gray">
-//         <span style="text-align:center">${statusHTML}</span>
-//         <span style="text-align:center">${esc(item.name) || '—'}</span>
-//         <span style="text-align:center">${productBadge}</span>
-//         <span style="text-align:center">${item.date ? fmtDate(item.date) : '—'}</span>
-//         <span style="text-align:center">${esc(item.from) || '—'}</span>
-//         <span style="text-align:center">${esc(item.to) || '—'}</span>
-//         <span class="t-row-total" style="text-align:right">${fmt(amt)}</span>
-//     </div>`;
-//             });
-
-
+        //                 rowsHTML += `
+        //     <div class="t-row" style="border:1px solid gray">
+        //         <span style="text-align:center">${statusHTML}</span>
+        //         <span style="text-align:center">${esc(item.name) || '—'}</span>
+        //         <span style="text-align:center">${productBadge}</span>
+        //         <span style="text-align:center">${item.date ? fmtDate(item.date) : '—'}</span>
+        //         <span style="text-align:center">${esc(item.from) || '—'}</span>
+        //         <span style="text-align:center">${esc(item.to) || '—'}</span>
+        //         <span class="t-row-total" style="text-align:right">${fmt(amt)}</span>
+        //     </div>`;
+        //             });
 
 
-//             const disc = parseFloat(v('discountRate')) || 0;
-//             const tax = parseFloat(v('taxRate')) || 0;
-//             const discAmt = sub * (disc / 100);
-//             const taxable = sub - discAmt;
-//             const taxAmt = taxable * (tax / 100);
-//             const total = taxable + taxAmt;
 
-//             const discRow = disc > 0 ? `<div class="t-trow"><span class="tk">Discount</span><span class="tv">-${fmt(discAmt)}</span></div>` : '';
-//             const taxRow = tax > 0 ? `<div class="t-trow"><span class="tk">Tax (${tax}%)</span><span class="tv">${fmt(taxAmt)}</span></div>` : '';
 
-//             const sigHTML = sigData
-//                 ? `<div class="t-sig-wrap" style="display:block"><h4 class="t-sig-label" style="font-size:10px;font-weight:bold">ហត្ថលេខា</h4><img src="${sigData}"><div class="t-sig-label" style="margin-left:30px">សាយ សុភី</div></div>`
-//                 : `<div class="t-sig-wrap"></div>`;
+        //             const disc = parseFloat(v('discountRate')) || 0;
+        //             const tax = parseFloat(v('taxRate')) || 0;
+        //             const discAmt = sub * (disc / 100);
+        //             const taxable = sub - discAmt;
+        //             const taxAmt = taxable * (tax / 100);
+        //             const total = taxable + taxAmt;
 
-//             if (t === 10) {
-//                 return `<div class="${cl}">
-//       ${logoHTML}
-//       <div class="t-head">
-//         <div class="t-brand">${esc(fromName)}</div>
-//         <div class="t-tagline">${esc(tagline)}</div>
-//         <div class="t-from">${fromAddr}</div>
-//       </div>
-//       <div class="t-inv-title">INVOICE</div>
-//       <div class="t-meta-area">
-//         <span><span class="t-meta-key">Invoice # </span>${esc(invNum)}</span>
-//         <span><span class="t-meta-key">Issue: </span>${issueDate}</span>
-//         <span><span class="t-meta-key">Due: </span>${dueDate}</span>
-//       </div>
-//       <div class="t-bill">
-//         <div><div class="t-bill-label">Bill To</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
-//         <div><div class="t-bill-label">Amount Due</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
-//       </div>
-//       <div class="t-items-head"><span style="text-align:center;">ស្ថានភាព</span><span>ស្លាកលេខឡាន</span><span style="text-align:right">ប្រភេទ</span><span style="text-align:right">ថ្ងៃខែ</span><span style="text-align:right">ចេញពី</span><span style="text-align:right">ទៅ</span><span style="text-align:right">តម្លៃ</span></div>
-//       ${rowsHTML}
-//       <div class="t-totals"><div class="t-tbox">
-//         <div class="t-trow"><span class="tk">Subtotal</span><span class="tv">${fmt(sub)}</span></div>
-//         ${discRow}${taxRow}
-//         <div class="t-trow grand"><span class="tk">Total Due</span><span class="tv">${fmt(total)}</span></div>
-//       </div></div>
-//       <div class="t-footer">
-//         <div><div class="t-footer-label">Notes</div><div style="font-size:11px;color:#555">${notesText}</div></div>
-//         <div><div class="t-footer-label">Payment</div><div style="font-size:11px;color:#444;line-height:1.9">${payText}</div></div>
-//       </div>
-//       ${sigHTML}
-//     </div>`;
-//             }
+        //             const discRow = disc > 0 ? `<div class="t-trow"><span class="tk">Discount</span><span class="tv">-${fmt(discAmt)}</span></div>` : '';
+        //             const taxRow = tax > 0 ? `<div class="t-trow"><span class="tk">Tax (${tax}%)</span><span class="tv">${fmt(taxAmt)}</span></div>` : '';
 
-//             return `<div class="${cl}">
-//     <div class="t-head">
-//       <div>
-//         ${logoHTML}
-//         <div class="t-brand">${esc(fromName)}</div>
-//         ${tagline ? `<div class="t-tagline">${esc(tagline)}</div>` : ''}
-//         <div class="t-from">${fromAddr}</div>
-//       </div>
-//       <div>
-//         <div class="t-inv-title">វិក័យបត្រ</div>
-//         <div class="t-meta-row"><span class="t-meta-key">លេខសម្គាល់ #</span><span class="t-meta-val">${esc(invNum)}</span></div>
-//         <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេទ:</span><span class="t-meta-val">${issueDate}</span></div>
-//         <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេតផុតកំណត់:</span><span class="t-meta-val">${dueDate}</span></div>
-//       </div>
-//     </div>
-//     <div class="t-bill">
-//       <div><div class="t-bill-label">ផ្ញើទៅកាន់</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
-//       <div><div class="t-bill-label">កាលបរិច្ឆេទ</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
-//     </div>
-//         <div class="t-items-head">
-//             <span style="text-align:center;">ទូទាត់</span>
-//             <span style="text-align:center;padding-left:10px">លេខឡាន</span>
-//             <span style="text-align:center;padding-left:10px ">ដឹកទំនិញ</span>
-//             <span style="text-align:center">ថ្ងៃខែ</span>
-//             <span style="text-align:center">ចេញពី</span>
-//             <span style="text-align:center">ទៅ</span>
-//         </div>
-//     ${rowsHTML}
-//     <div class="t-totals"><div class="t-tbox">
-//       <div class="t-trow"><span class="tk">តម្លៃសរុប ​:</span><span class="tv">${fmt(sub)}</span></div>
-//       ${discRow}${taxRow}
-//       <div class="t-trow grand"><span class="tk">តម្លៃចុងក្រោយ​ : </span><span class="tv">${fmt(total)}</span></div>
-//     </div></div>
-//     <div class="t-footer">
-//       <div><div class="t-footer-label">សម្គាល់</div><div style="font-size:11px;line-height:1.7">${notesText}</div></div>
-//       <div><div class="t-footer-label">ការបង់ប្រាក់</div><div style="font-size:11px;line-height:1.9">${payText}</div></div>
-//     </div>
-//     ${sigHTML}
-//   </div>`;
-//         }
+        //             const sigHTML = sigData
+        //                 ? `<div class="t-sig-wrap" style="display:block"><h4 class="t-sig-label" style="font-size:10px;font-weight:bold">ហត្ថលេខា</h4><img src="${sigData}"><div class="t-sig-label" style="margin-left:30px">សាយ សុភី</div></div>`
+        //                 : `<div class="t-sig-wrap"></div>`;
 
-function buildInvoiceHTML() {
-    const t = currentTpl;
-    const cl = `inv-tpl-${t}`;
-    const fromName = v('fromName') || 'ព័ត៌មានរបស់អ្នក';
-    const tagline = v('fromTagline');
-    const fromAddr = nl2br(v('fromAddress'));
-    const toName = v('toName') || 'ឈ្មោះអតិថិជន';
-    const toDetail = nl2br([v('toEmail'), v('toAddress')].filter(Boolean).join('\n'));
-    const invNum = v('invoiceNum') || 'INV-001';
-    const issueDate = fmtDate(v('issueDate'));
-    const dueDate = fmtDate(v('dueDate'));
-    const notesText = nl2br(v('notes')) || 'អរគុណសម្រាប់ការសហការ!';
-    const payText = nl2br(v('paymentInfo'));
-    const logoHTML = logoData ? `<img src="${logoData}" class="t-logo">` : '';
+        //             if (t === 10) {
+        //                 return `<div class="${cl}">
+        //       ${logoHTML}
+        //       <div class="t-head">
+        //         <div class="t-brand">${esc(fromName)}</div>
+        //         <div class="t-tagline">${esc(tagline)}</div>
+        //         <div class="t-from">${fromAddr}</div>
+        //       </div>
+        //       <div class="t-inv-title">INVOICE</div>
+        //       <div class="t-meta-area">
+        //         <span><span class="t-meta-key">Invoice # </span>${esc(invNum)}</span>
+        //         <span><span class="t-meta-key">Issue: </span>${issueDate}</span>
+        //         <span><span class="t-meta-key">Due: </span>${dueDate}</span>
+        //       </div>
+        //       <div class="t-bill">
+        //         <div><div class="t-bill-label">Bill To</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
+        //         <div><div class="t-bill-label">Amount Due</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
+        //       </div>
+        //       <div class="t-items-head"><span style="text-align:center;">ស្ថានភាព</span><span>ស្លាកលេខឡាន</span><span style="text-align:right">ប្រភេទ</span><span style="text-align:right">ថ្ងៃខែ</span><span style="text-align:right">ចេញពី</span><span style="text-align:right">ទៅ</span><span style="text-align:right">តម្លៃ</span></div>
+        //       ${rowsHTML}
+        //       <div class="t-totals"><div class="t-tbox">
+        //         <div class="t-trow"><span class="tk">Subtotal</span><span class="tv">${fmt(sub)}</span></div>
+        //         ${discRow}${taxRow}
+        //         <div class="t-trow grand"><span class="tk">Total Due</span><span class="tv">${fmt(total)}</span></div>
+        //       </div></div>
+        //       <div class="t-footer">
+        //         <div><div class="t-footer-label">Notes</div><div style="font-size:11px;color:#555">${notesText}</div></div>
+        //         <div><div class="t-footer-label">Payment</div><div style="font-size:11px;color:#444;line-height:1.9">${payText}</div></div>
+        //       </div>
+        //       ${sigHTML}
+        //     </div>`;
+        //             }
 
-    let sub = 0;
-    let rowsHTML = '';
+        //             return `<div class="${cl}">
+        //     <div class="t-head">
+        //       <div>
+        //         ${logoHTML}
+        //         <div class="t-brand">${esc(fromName)}</div>
+        //         ${tagline ? `<div class="t-tagline">${esc(tagline)}</div>` : ''}
+        //         <div class="t-from">${fromAddr}</div>
+        //       </div>
+        //       <div>
+        //         <div class="t-inv-title">វិក័យបត្រ</div>
+        //         <div class="t-meta-row"><span class="t-meta-key">លេខសម្គាល់ #</span><span class="t-meta-val">${esc(invNum)}</span></div>
+        //         <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេទ:</span><span class="t-meta-val">${issueDate}</span></div>
+        //         <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេតផុតកំណត់:</span><span class="t-meta-val">${dueDate}</span></div>
+        //       </div>
+        //     </div>
+        //     <div class="t-bill">
+        //       <div><div class="t-bill-label">ផ្ញើទៅកាន់</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
+        //       <div><div class="t-bill-label">កាលបរិច្ឆេទ</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
+        //     </div>
+        //         <div class="t-items-head">
+        //             <span style="text-align:center;">ទូទាត់</span>
+        //             <span style="text-align:center;padding-left:10px">លេខឡាន</span>
+        //             <span style="text-align:center;padding-left:10px ">ដឹកទំនិញ</span>
+        //             <span style="text-align:center">ថ្ងៃខែ</span>
+        //             <span style="text-align:center">ចេញពី</span>
+        //             <span style="text-align:center">ទៅ</span>
+        //         </div>
+        //     ${rowsHTML}
+        //     <div class="t-totals"><div class="t-tbox">
+        //       <div class="t-trow"><span class="tk">តម្លៃសរុប ​:</span><span class="tv">${fmt(sub)}</span></div>
+        //       ${discRow}${taxRow}
+        //       <div class="t-trow grand"><span class="tk">តម្លៃចុងក្រោយ​ : </span><span class="tv">${fmt(total)}</span></div>
+        //     </div></div>
+        //     <div class="t-footer">
+        //       <div><div class="t-footer-label">សម្គាល់</div><div style="font-size:11px;line-height:1.7">${notesText}</div></div>
+        //       <div><div class="t-footer-label">ការបង់ប្រាក់</div><div style="font-size:11px;line-height:1.9">${payText}</div></div>
+        //     </div>
+        //     ${sigHTML}
+        //   </div>`;
+        //         }
 
-    items.forEach(item => {
-        const amt = parseFloat(item.amount) || 0;
-        sub += amt;                    // ← FIXED: Now correctly adds amounts
+        function buildInvoiceHTML() {
+            const t = currentTpl;
+            const cl = `inv-tpl-${t}`;
+            const fromName = v('fromName') || 'ព័ត៌មានរបស់អ្នក';
+            const tagline = v('fromTagline');
+            const fromAddr = nl2br(v('fromAddress'));
+            const toName = v('toName') || 'ឈ្មោះអតិថិជន';
+            const toDetail = nl2br([v('toEmail'), v('toAddress')].filter(Boolean).join('\n'));
+            const invNum = v('invoiceNum') || 'INV-001';
+            const issueDate = fmtDate(v('issueDate'));
+            const dueDate = fmtDate(v('dueDate'));
+            const notesText = nl2br(v('notes')) || 'អរគុណសម្រាប់ការសហការ!';
+            const payText = nl2br(v('paymentInfo'));
+            const logoHTML = logoData ? `<img src="${logoData}" class="t-logo">` : '';
 
-        const prodType = getProductTypeDisplay(item);
-        const productBadge = prodType ? `<span class="t-product-badge">${esc(prodType)}</span>` : '—';
+            let sub = 0;
+            let rowsHTML = '';
 
-        const statusHTML = `<span class="t-status ${item.ready ? 'ready' : 'notready'}">
+            items.forEach(item => {
+                const amt = parseFloat(item.amount) || 0;
+                sub += amt;                    // ← FIXED: Now correctly adds amounts
+
+                const prodType = getProductTypeDisplay(item);
+                const productBadge = prodType ? `<span class="t-product-badge">${esc(prodType)}</span>` : '—';
+
+                const statusHTML = `<span class="t-status ${item.ready ? 'ready' : 'notready'}">
             ${item.ready ? '✓' : '✕'}
         </span>`;
 
-        rowsHTML += `
+                rowsHTML += `
         <div class="t-row">
             <span style="text-align:center">${statusHTML}</span>
             <span style="text-align:center">${esc(item.name) || '—'}</span>
@@ -6117,25 +6124,26 @@ function buildInvoiceHTML() {
             <span style="text-align:center">${esc(item.to) || '—'}</span>
             <span class="t-row-total" style="text-align:right; font-weight:600">${fmt(amt)}</span>
         </div>`;
-    });
+            });
 
-    const disc = parseFloat(v('discountRate')) || 0;
-    const tax = parseFloat(v('taxRate')) || 0;
-    const discAmt = sub * (disc / 100);
-    const taxable = sub - discAmt;
-    const taxAmt = taxable * (tax / 100);
-    const total = taxable + taxAmt;
+            const disc = parseFloat(v('discountRate')) || 0;
+            const tax = parseFloat(v('taxRate')) || 0;
+            const discAmt = sub * (disc / 100);
+            const taxable = sub - discAmt;
+            const taxAmt = taxable * (tax / 100);
+            const total = taxable + taxAmt;
 
-    const discRow = disc > 0 ? `<div class="t-trow"><span class="tk">បញ្ចុះតម្លៃ (${disc}%)</span><span class="tv">-${fmt(discAmt)}</span></div>` : '';
-    const taxRow = tax > 0 ? `<div class="t-trow"><span class="tk">ពន្ធ (${tax}%)</span><span class="tv">${fmt(taxAmt)}</span></div>` : '';
+            const discRow = disc > 0 ? `<div class="t-trow"><span class="tk">បញ្ចុះតម្លៃ (${disc}%)</span><span class="tv">-${fmt(discAmt)}</span></div>` : '';
+            const taxRow = tax > 0 ? `<div class="t-trow"><span class="tk">ពន្ធ (${tax}%)</span><span class="tv">${fmt(taxAmt)}</span></div>` : '';
 
-    const sigHTML = sigData ? `
+            const sigHTML = sigData ? `
         <div class="t-sig-wrap" style="display:block">
-            <h4 class="t-sig-label">ហត្ថលេខា</h4>
+            <h4 class="t-sig-label">ស៊ីញ៉េយោង</h4>
             <img src="${sigData}" style="max-height:80px">
+            <h1 class="t-sig-label" style="padding-left:5% ; font-family:Freehand">សាយ សុភី</h1>
         </div>` : '';
 
-    return `<div class="${cl}">
+            return `<div class="${cl}">
         <div class="t-head">
             <div>
                 ${logoHTML}
@@ -6167,7 +6175,7 @@ function buildInvoiceHTML() {
             <span style="text-align:center;font-family:Freehand"></span>
             <span style="text-align:center ;font-family:Freehand">លេខឡាន</span>
             <span style="text-align:center;font-family:Freehand">ទំនិញ</span>
-            <span style="text-align:center;font-family:Freehand">ថ្ងៃខែ</span>
+            <span style="text-align:center;font-family:Freehand">ពេលវេលា</span>
             <span style="text-align:center;font-family:Freehand">ចេញពី</span>
             <span style="text-align:center;font-family:Freehand">ទៅ</span>
         </div>
@@ -6188,11 +6196,11 @@ function buildInvoiceHTML() {
 
         <div class="t-footer">
             <div><div class="t-footer-label">ចំណាំ</div><div style="line-height:1.6">${notesText}</div></div>
-            <div><div class="t-footer-label">ការបង់ថវិការ</div><div style="line-height:1.6">${payText}</div></div>
+            <div><div class="t-footer-label">ការបង់ថវិការតាមរយះ</div><div style="line-height:1.6">${payText}</div></div>
         </div>
         ${sigHTML}
     </div>`;
-}
+        }
 
 
 
