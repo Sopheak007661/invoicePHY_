@@ -5557,7 +5557,7 @@
                 <div class="field"><label style="font-size:13px">ឈ្មោះអតិថិជន</label><input id="toName"
                         placeholder="បញ្ចូលឈ្មោះអតិថិជន..." oninput="update()"></div>
                 <div class="field"><label style="font-size:13px">អ៊ីមែលអតិថិជន</label><input id="toEmail" type="email"
-                        placeholder="client@acme.com..." oninput="update()"></div>
+                        placeholder="បញ្ចូល អ៊ីមែ..." oninput="update()"></div>
                 <div class="field"><label style="font-size:13px">អាសយដ្ឋានអតិថិជន</label><textarea id="toAddress"
                         placeholder="ភូមិ.../ឃុំ.../ស្រុក.../ខេត្ត..." oninput="update()"></textarea></div>
                 <div class="section-label" style="font-size:15px;color:white">ព័ត៌មានវិក្កយបត្រ</div>
@@ -6158,7 +6158,7 @@ function buildInvoiceHTML() {
                 <div class="t-bill-detail">${toDetail}</div>
             </div>
             <div>
-                <div class="t-bill-label">សរុបត្រូវបង់</div>
+                <div class="t-bill-label">សរុប</div>
                 <div style="font-size:18px;font-weight:700;color:var(--sage)">${fmt(total)}</div>
             </div>
         </div>
@@ -6188,7 +6188,7 @@ function buildInvoiceHTML() {
 
         <div class="t-footer">
             <div><div class="t-footer-label">ចំណាំ</div><div style="line-height:1.6">${notesText}</div></div>
-            <div><div class="t-footer-label">ការបង់ប្រាក់</div><div style="line-height:1.6">${payText}</div></div>
+            <div><div class="t-footer-label">ការបង់ថវិការ</div><div style="line-height:1.6">${payText}</div></div>
         </div>
         ${sigHTML}
     </div>`;
@@ -6340,8 +6340,8 @@ function buildInvoiceHTML() {
       <div class="inv-list-date">${inv._saved || ''}</div></div>
     </div>
     <div style="display:flex;gap:6px;margin-top:7px">
-      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="loadInvoice(${inv._id})">Load</button>
-      <button class="btn-danger-sm" onclick="deleteInvoice(${inv._id})">Delete</button>
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="loadInvoice(${inv._id})">កែ</button>
+      <button class="btn-danger-sm" onclick="deleteInvoice(${inv._id})">លុប</button>
     </div>`;
                 wrap.appendChild(d);
             });
