@@ -5517,21 +5517,35 @@
         <!-- Right Image (Car) - Slides in from the right -->
         <img src="./img/Car.png" alt="car" class="anim-fade-right" style="width: 50%;">
 
-        <!-- Khmer Text - Pops up gracefully with a text-shadow effect -->
-        <h1 class="anim-text-pop"
-            style="font-family: Angkor; position: absolute; left: 30%; bottom: 40%; letter-spacing: 5px; color: #062d96; line-height: 1.4; margin: 0;">
-            ឧបករណ៍ធ្វើ<br> វិក័យបត្រ
+     <h1 class="anim-text-pop"
+            style="
+                font-family: Angkor;
+                position: absolute; left: 30%; bottom: 40%;
+                letter-spacing: 3px;
+                line-height: 1.6;
+                margin: 0;
+                font-size: 2em;
+                background: linear-gradient(160deg, #ffe066 0%, #f5c800 30%, #c8860a 65%, #ffe599 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                filter:
+                    drop-shadow(2px 2px 0px rgba(0,0,0,0.95))
+                    drop-shadow(0px 0px 18px rgba(0,0,0,0.8))
+                    drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
+            ">
+            សាយ សុភី<br>ឈឿត ស្រីស្រួន
         </h1>
     </div>
-    <header class="app-header">
+    <header class="app-header" style="background: #958815;">
         <div class="header-right">
-            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-ghost" onclick="newInvoice()">＋
+            <button style="font-family: Angkor;letter-spacing: 1px;background-color:#154695;" class="btn btn-ghost" onclick="newInvoice()">＋
                 បង្កើតថ្មី</button>
-            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-ghost" onclick="openShareModal()">🔗
+            <button style="font-family: Angkor;letter-spacing: 1px;background-color: #221595;" class="btn btn-ghost" onclick="openShareModal()">🔗
                 ចែករំលែក</button>
-            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-accent" onclick="downloadPNG()">🖼
+            <button style="font-family: Angkor;letter-spacing: 1px;background: #9F0202" class="btn btn-accent" onclick="downloadPNG()">🖼
                 រូបភាព PNG</button>
-            <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-sage" onclick="downloadPDF()">⬇
+            <button style="font-family: Angkor;letter-spacing: 1px;background-color:#9F0290 ;" class="btn btn-sage" onclick="downloadPDF()">⬇
                 ឯកសារ PDF</button>
             <button style="font-family: Angkor;letter-spacing: 1px;" class="btn btn-primary" onclick="window.print()">🖨
                 បោះពុម្ព</button>
@@ -5540,14 +5554,14 @@
 
     <div class="app-body" style="display:flex;flex-direction:column;gap:10px;justify-content:space-between">
         <aside class="panel">
-            <div class="panel-tabs" style="position: sticky;top: 0;z-index:500;background-color: #062d96;">
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn active"
+            <div class="panel-tabs" style="background-color: #062d96;box-shadow: 2px 2px 10px yellow;">
+                <button style="font-family:Bokor ;color:black;;letter-spacing: 1px; color:yellow;font-weight: normal;" class="tab-btn active"
                     onclick="switchTab('info')">ព័ត៌មាន</button>
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn"
+                <button style="font-family:Bokor ;color:black;;letter-spacing: 1px; color:yellow;font-weight: normal;" class="tab-btn"
                     onclick="switchTab('items')">ឡានទំនិញ</button>
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn"
+                <button style="font-family:Bokor ;color:black;;letter-spacing: 1px; color:yellow;font-weight: normal; " class="tab-btn"
                     onclick="switchTab('design')">ការរចនា</button>
-                <button style="font-family:Bokor ;color:black;letter-spacing: 2px;" class="tab-btn"
+                <button style="font-family:Bokor ;color:black;;letter-spacing: 1px; color:yellow;font-weight: normal;" class="tab-btn"
                     onclick="switchTab('history')">ប្រវត្តិ</button>
             </div>
 
@@ -5621,7 +5635,7 @@
                 <div class="section-label">ឡានជួលដឹកទំនិញ (ស្លាកលេខ / ថ្ងៃខែ / ចេញពី / ទៅ / ប្រភេទទំនិញ / តម្លៃ)</div>
                 <div id="itemsList"></div>
                 <div style="padding-bottom:300px">
-                    <button class="btn-add-item" onclick="addItem()" style="padding:50px ">+ បន្ថែមឡាន</button>
+                    <button class="btn-add-item" onclick="addItem()" style="padding:50px ;background-color:white ;color:black">+ បន្ថែមឡាន</button>
                 </div>
 
             </div>
@@ -5887,7 +5901,7 @@
                 ).join('');
 
                 const customInputHTML = item.productType === 'custom'
-                    ? `<div class="item-row1" style="margin-top:4px">
+                    ? `<div class="item-row1" style="margin-top:4px ">
                 <input type="text" placeholder="បញ្ចូលប្រភេទទំនិញផ្ទាល់ខ្លួន..." value="${esc(item.customProductType)}"
                   oninput="items[${idx}].customProductType=this.value;update()">
                </div>`
@@ -5895,7 +5909,7 @@
 
                 d.innerHTML = `
       <div class="item-card-head" style="margin-bottom:10px">
-        <input style="padding:10px" type="text" placeholder="បញ្ចូលស្លាកលេខឡាន..." value="${esc(item.name)}"
+        <input style="padding:30px;background-color:white ;color:black" type="text" placeholder="បញ្ចូលស្លាកលេខឡាន..." value="${esc(item.name)}"
           oninput="items[${idx}].name=this.value;update()">
         <button class="btn-danger-sm" onclick="removeItem(${item.id})">✕</button>
       </div>
@@ -5904,10 +5918,112 @@
           oninput="items[${idx}].date=this.value;update()">
       </div>
       <div class="item-row3">
+        <!-- Province datalist - place once outside the loop -->
+        <datalist id="province-list">
+        <option value="បន្ទាយមានជ័យ">
+        <option value="បាត់ដំបង">
+        <option value="កំពង់ចាម">
+        <option value="កំពង់ឆ្នាំង">
+        <option value="កំពង់ស្ពឺ">
+        <option value="កំពង់ធំ">
+        <option value="កំពត">
+        <option value="កណ្ដាល">
+        <option value="កោះកុង">
+        <option value="ក្រចេះ">
+        <option value="មណ្ឌលគីរី">
+        <option value="ភ្នំពេញ">
+        <option value="ព្រះវិហារ">
+        <option value="ព្រៃវែង">
+        <option value="ពោធិ៍សាត់">
+        <option value="រតនគីរី">
+        <option value="សៀមរាប">
+        <option value="ព្រះសីហនុ">
+        <option value="ស្ទឹងត្រែង">
+        <option value="ស្វាយរៀង">
+        <option value="តាកែវ">
+        <option value="ត្បូងឃ្មុំ">
+        <option value="ឧត្តរមានជ័យ">
+        <option value="ប៉ៃលិន">
+        <option value="កែប">
+        </datalist>
+
+        <!-- FROM field -->
+        <div style="display:flex;gap:4px;align-items:center">
+        <select onchange="
+            if(this.value){items[${idx}].from=this.value;update();
+            this.nextElementSibling.value=this.value;}
+            this.value='';"
+            style="flex:0 0 auto;padding:4px 6px;border:1px solid #ccc;border-radius:6px;font-family:inherit;font-size:0.85em;">
+            <option value="">🏙️ ខេត្ត/រាជធានី</option>
+            <option value="បន្ទាយមានជ័យ">បន្ទាយមានជ័យ</option>
+            <option value="បាត់ដំបង">បាត់ដំបង</option>
+            <option value="កំពង់ចាម">កំពង់ចាម</option>
+            <option value="កំពង់ឆ្នាំង">កំពង់ឆ្នាំង</option>
+            <option value="កំពង់ស្ពឺ">កំពង់ស្ពឺ</option>
+            <option value="កំពង់ធំ">កំពង់ធំ</option>
+            <option value="កំពត">កំពត</option>
+            <option value="កណ្ដាល">កណ្ដាល</option>
+            <option value="កោះកុង">កោះកុង</option>
+            <option value="ក្រចេះ">ក្រចេះ</option>
+            <option value="មណ្ឌលគីរី">មណ្ឌលគីរី</option>
+            <option value="ភ្នំពេញ">ភ្នំពេញ</option>
+            <option value="ព្រះវិហារ">ព្រះវិហារ</option>
+            <option value="ព្រៃវែង">ព្រៃវែង</option>
+            <option value="ពោធិ៍សាត់">ពោធិ៍សាត់</option>
+            <option value="រតនគីរី">រតនគីរី</option>
+            <option value="សៀមរាប">សៀមរាប</option>
+            <option value="ព្រះសីហនុ">ព្រះសីហនុ</option>
+            <option value="ស្ទឹងត្រែង">ស្ទឹងត្រែង</option>
+            <option value="ស្វាយរៀង">ស្វាយរៀង</option>
+            <option value="តាកែវ">តាកែវ</option>
+            <option value="ត្បូងឃ្មុំ">ត្បូងឃ្មុំ</option>
+            <option value="ឧត្តរមានជ័យ">ឧត្តរមានជ័យ</option>
+            <option value="ប៉ៃលិន">ប៉ៃលិន</option>
+            <option value="កែប">កែប</option>
+        </select>
         <input type="text" placeholder="ចេញពី (From)" value="${esc(item.from)}"
-          oninput="items[${idx}].from=this.value;update()">
+            oninput="items[${idx}].from=this.value;update()"
+            style="flex:1;">
+        </div>
+
+        <!-- TO field -->
+        <div style="display:flex;gap:4px;align-items:center">
+        <select onchange="
+            if(this.value){items[${idx}].to=this.value;update();
+            this.nextElementSibling.value=this.value;}
+            this.value='';"
+            style="flex:0 0 auto;padding:4px 6px;border:1px solid #ccc;border-radius:6px;font-family:inherit;font-size:0.85em;">
+            <option value="">🏙️ ខេត្ត/រាជធានី</option>
+            <option value="បន្ទាយមានជ័យ">បន្ទាយមានជ័យ</option>
+            <option value="បាត់ដំបង">បាត់ដំបង</option>
+            <option value="កំពង់ចាម">កំពង់ចាម</option>
+            <option value="កំពង់ឆ្នាំង">កំពង់ឆ្នាំង</option>
+            <option value="កំពង់ស្ពឺ">កំពង់ស្ពឺ</option>
+            <option value="កំពង់ធំ">កំពង់ធំ</option>
+            <option value="កំពត">កំពត</option>
+            <option value="កណ្ដាល">កណ្ដាល</option>
+            <option value="កោះកុង">កោះកុង</option>
+            <option value="ក្រចេះ">ក្រចេះ</option>
+            <option value="មណ្ឌលគីរី">មណ្ឌលគីរី</option>
+            <option value="ភ្នំពេញ">ភ្នំពេញ</option>
+            <option value="ព្រះវិហារ">ព្រះវិហារ</option>
+            <option value="ព្រៃវែង">ព្រៃវែង</option>
+            <option value="ពោធិ៍សាត់">ពោធិ៍សាត់</option>
+            <option value="រតនគីរី">រតនគីរី</option>
+            <option value="សៀមរាប">សៀមរាប</option>
+            <option value="ព្រះសីហនុ">ព្រះសីហនុ</option>
+            <option value="ស្ទឹងត្រែង">ស្ទឹងត្រែង</option>
+            <option value="ស្វាយរៀង">ស្វាយរៀង</option>
+            <option value="តាកែវ">តាកែវ</option>
+            <option value="ត្បូងឃ្មុំ">ត្បូងឃ្មុំ</option>
+            <option value="ឧត្តរមានជ័យ">ឧត្តរមានជ័យ</option>
+            <option value="ប៉ៃលិន">ប៉ៃលិន</option>
+            <option value="កែប">កែប</option>
+        </select>
         <input type="text" placeholder="ទៅ (To)" value="${esc(item.to)}"
-          oninput="items[${idx}].to=this.value;update()">
+            oninput="items[${idx}].to=this.value;update()"
+            style="flex:1;">
+        </div>
       </div>
       <div class="item-product-label">ប្រភេទទំនិញ (Product Type)</div>
       <div class="item-row1">
@@ -5915,12 +6031,13 @@
       </div>
       ${customInputHTML}
       <div class="item-amount-row" style="width:50%;margin-top:6px">
-        <input style="padding-right:50%" type="number" placeholder="តម្លៃដឹកទំនិញ" value="${item.amount}" min="0" step="0.01"
+        <label for="inp" style="color:gray ;padding-buttom:5px;padding-top:15px">តម្លៃថ្លៃដឹកទំនិញុ</label>
+        <input id="inp" style="padding-right:50%;background-color:white ;color:black" type="number" placeholder="តម្លៃដឹកទំនិញ" value="${item.amount}"  step="0.01"
           oninput="items[${idx}].amount=parseFloat(this.value)||0;update()">
       </div>
       <div class="item-ready-row">
-        <label>
-          <input type="checkbox" ${item.ready ? 'checked' : ''} onchange="toggleReady(${item.id},this.checked)">
+        <label style="color:green; font-weight:bold ;font-size:10px;font-family:sanserif">
+          <input   type="checkbox" ${item.ready ? 'checked' : ''} onchange="toggleReady(${item.id},this.checked)">
           បានដឹកទំនិញរួចរាល់ / Ready
         </label>
         <span class="item-ready-tag ${item.ready ? 'ready' : 'notready'}">${item.ready ? 'ដឹកទំនិញរួចរាល់ / Ready' : 'កំពុងដឹកទំនិញ / Not Ready'}</span>
@@ -5936,156 +6053,7 @@
             return item.productType;
         }
 
-        //         function buildInvoiceHTML() {
-        //             const t = currentTpl;
-        //             const cl = `inv-tpl-${t}`;
-        //             const fromName = v('fromName') || 'ព័ត៍មានរបស់អ្នក';
-        //             const tagline = v('fromTagline');
-        //             const fromAddr = nl2br(v('fromAddress'));
-        //             const toName = v('toName') || 'ឈ្មោះអតិថិជន';
-        //             const toDetail = nl2br([v('toEmail'), v('toAddress')].filter(Boolean).join('\n'));
-        //             const invNum = v('invoiceNum') || 'INV-001';
-        //             const issueDate = fmtDate(v('issueDate'));
-        //             const dueDate = fmtDate(v('dueDate'));
-        //             const notesText = nl2br(v('notes')) || 'អគុណសម្រាប់ការសហការ!';
-        //             const payText = nl2br(v('paymentInfo'));
-        //             const logoHTML = logoData ? `<img src="${logoData}" class="t-logo">` : '';
 
-        //             let sub = 0;
-        //             // let rowsHTML = '';
-        //             // items.forEach(item => {
-        //             //     const amt = parseFloat(item.amount) || 0;
-        //             //     sub += amt;
-        //             //     const statusHTML = `<span style="text-align:center;position:relative;width:50px" class="t-status ${item.ready?'ready':'notready'}">${item.ready?'ដឹកបានជោគជ័យ':'កំពុងដឹកទំនិញ'}</span>`;
-        //             //     const prodType = getProductTypeDisplay(item);
-        //             //     const productBadge = prodType
-        //             //         ? `<span class="t-product-badge" title="ប្រភេទទំនិញ">${esc(prodType)}</span>`
-        //             //         : '<span style="font-size:10px;color:#aaa">—</span>';
-        //             //     rowsHTML += `<div class="t-row" style="border:1px solid gray;">
-        //             //   <span>${statusHTML}</span>
-        //             //   <div style="text-align:center;margin-left:60px;border-left:1px solid gray">${esc(item.name)||'<em style="opacity:.5">ស្លាកលេខ</em>'}</div>
-        //             //   <span style="border-left:1px solid gray;text-align:center">${productBadge}</span>
-        //             //   <span style="border-left:1px solid gray;text-align:center;height:50%">${item.date?fmtDate(item.date):'—'}</span>
-        //             //   <span style="border-left:1px solid gray;text-align:center">${esc(item.from)||'—'}</span>
-        //             //   <span style="border-left:1px solid gray;text-align:center">${esc(item.to)||'—'}</span>
-        //             //   <span class="t-row-total" style="border-left:1px solid gray;text-align:center">${fmt(amt)}</span>
-        //             // </div>`;
-        //             // });
-
-        //             let rowsHTML = '';
-        //             items.forEach(item => {
-        //                 const amt = parseFloat(item.amount) || 0;
-        //                 const prodType = getProductTypeDisplay(item);
-        //                 const productBadge = prodType
-        //                     ? `<span class="t-product-badge">${esc(prodType)}</span>`
-        //                     : '—';
-
-        //                 const statusHTML = `<span class="t-status ${item.ready ? 'ready' : 'notready'}">
-        //         ${item.ready ? '✓' : '✕'}
-        //     </span>`;
-
-        //                 rowsHTML += `
-        //     <div class="t-row" style="border:1px solid gray">
-        //         <span style="text-align:center">${statusHTML}</span>
-        //         <span style="text-align:center">${esc(item.name) || '—'}</span>
-        //         <span style="text-align:center">${productBadge}</span>
-        //         <span style="text-align:center">${item.date ? fmtDate(item.date) : '—'}</span>
-        //         <span style="text-align:center">${esc(item.from) || '—'}</span>
-        //         <span style="text-align:center">${esc(item.to) || '—'}</span>
-        //         <span class="t-row-total" style="text-align:right">${fmt(amt)}</span>
-        //     </div>`;
-        //             });
-
-
-
-
-        //             const disc = parseFloat(v('discountRate')) || 0;
-        //             const tax = parseFloat(v('taxRate')) || 0;
-        //             const discAmt = sub * (disc / 100);
-        //             const taxable = sub - discAmt;
-        //             const taxAmt = taxable * (tax / 100);
-        //             const total = taxable + taxAmt;
-
-        //             const discRow = disc > 0 ? `<div class="t-trow"><span class="tk">Discount</span><span class="tv">-${fmt(discAmt)}</span></div>` : '';
-        //             const taxRow = tax > 0 ? `<div class="t-trow"><span class="tk">Tax (${tax}%)</span><span class="tv">${fmt(taxAmt)}</span></div>` : '';
-
-        //             const sigHTML = sigData
-        //                 ? `<div class="t-sig-wrap" style="display:block"><h4 class="t-sig-label" style="font-size:10px;font-weight:bold">ហត្ថលេខា</h4><img src="${sigData}"><div class="t-sig-label" style="margin-left:30px">សាយ សុភី</div></div>`
-        //                 : `<div class="t-sig-wrap"></div>`;
-
-        //             if (t === 10) {
-        //                 return `<div class="${cl}">
-        //       ${logoHTML}
-        //       <div class="t-head">
-        //         <div class="t-brand">${esc(fromName)}</div>
-        //         <div class="t-tagline">${esc(tagline)}</div>
-        //         <div class="t-from">${fromAddr}</div>
-        //       </div>
-        //       <div class="t-inv-title">INVOICE</div>
-        //       <div class="t-meta-area">
-        //         <span><span class="t-meta-key">Invoice # </span>${esc(invNum)}</span>
-        //         <span><span class="t-meta-key">Issue: </span>${issueDate}</span>
-        //         <span><span class="t-meta-key">Due: </span>${dueDate}</span>
-        //       </div>
-        //       <div class="t-bill">
-        //         <div><div class="t-bill-label">Bill To</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
-        //         <div><div class="t-bill-label">Amount Due</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
-        //       </div>
-        //       <div class="t-items-head"><span style="text-align:center;">ស្ថានភាព</span><span>ស្លាកលេខឡាន</span><span style="text-align:right">ប្រភេទ</span><span style="text-align:right">ថ្ងៃខែ</span><span style="text-align:right">ចេញពី</span><span style="text-align:right">ទៅ</span><span style="text-align:right">តម្លៃ</span></div>
-        //       ${rowsHTML}
-        //       <div class="t-totals"><div class="t-tbox">
-        //         <div class="t-trow"><span class="tk">Subtotal</span><span class="tv">${fmt(sub)}</span></div>
-        //         ${discRow}${taxRow}
-        //         <div class="t-trow grand"><span class="tk">Total Due</span><span class="tv">${fmt(total)}</span></div>
-        //       </div></div>
-        //       <div class="t-footer">
-        //         <div><div class="t-footer-label">Notes</div><div style="font-size:11px;color:#555">${notesText}</div></div>
-        //         <div><div class="t-footer-label">Payment</div><div style="font-size:11px;color:#444;line-height:1.9">${payText}</div></div>
-        //       </div>
-        //       ${sigHTML}
-        //     </div>`;
-        //             }
-
-        //             return `<div class="${cl}">
-        //     <div class="t-head">
-        //       <div>
-        //         ${logoHTML}
-        //         <div class="t-brand">${esc(fromName)}</div>
-        //         ${tagline ? `<div class="t-tagline">${esc(tagline)}</div>` : ''}
-        //         <div class="t-from">${fromAddr}</div>
-        //       </div>
-        //       <div>
-        //         <div class="t-inv-title">វិក័យបត្រ</div>
-        //         <div class="t-meta-row"><span class="t-meta-key">លេខសម្គាល់ #</span><span class="t-meta-val">${esc(invNum)}</span></div>
-        //         <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេទ:</span><span class="t-meta-val">${issueDate}</span></div>
-        //         <div class="t-meta-row"><span class="t-meta-key">កាលបរិច្ឆេតផុតកំណត់:</span><span class="t-meta-val">${dueDate}</span></div>
-        //       </div>
-        //     </div>
-        //     <div class="t-bill">
-        //       <div><div class="t-bill-label">ផ្ញើទៅកាន់</div><div class="t-bill-name">${esc(toName)}</div><div class="t-bill-detail">${toDetail}</div></div>
-        //       <div><div class="t-bill-label">កាលបរិច្ឆេទ</div><div class="t-bill-name">${dueDate}</div><div style="font-size:14px;font-weight:700;margin-top:4px">${fmt(total)}</div></div>
-        //     </div>
-        //         <div class="t-items-head">
-        //             <span style="text-align:center;">ទូទាត់</span>
-        //             <span style="text-align:center;padding-left:10px">លេខឡាន</span>
-        //             <span style="text-align:center;padding-left:10px ">ដឹកទំនិញ</span>
-        //             <span style="text-align:center">ថ្ងៃខែ</span>
-        //             <span style="text-align:center">ចេញពី</span>
-        //             <span style="text-align:center">ទៅ</span>
-        //         </div>
-        //     ${rowsHTML}
-        //     <div class="t-totals"><div class="t-tbox">
-        //       <div class="t-trow"><span class="tk">តម្លៃសរុប ​:</span><span class="tv">${fmt(sub)}</span></div>
-        //       ${discRow}${taxRow}
-        //       <div class="t-trow grand"><span class="tk">តម្លៃចុងក្រោយ​ : </span><span class="tv">${fmt(total)}</span></div>
-        //     </div></div>
-        //     <div class="t-footer">
-        //       <div><div class="t-footer-label">សម្គាល់</div><div style="font-size:11px;line-height:1.7">${notesText}</div></div>
-        //       <div><div class="t-footer-label">ការបង់ប្រាក់</div><div style="font-size:11px;line-height:1.9">${payText}</div></div>
-        //     </div>
-        //     ${sigHTML}
-        //   </div>`;
-        //         }
 
         function buildInvoiceHTML() {
             const t = currentTpl;

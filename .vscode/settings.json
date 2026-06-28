@@ -1,3 +1,4 @@
 {
-  "livePreview.defaultPreviewPath": "/Souce_code/Truck.html"
+  "livePreview.defaultPreviewPath": "/Souce_code/Truck.html",
+  "liveServer.settings.port": 5501
 }
